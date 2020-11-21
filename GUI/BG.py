@@ -29,15 +29,15 @@ class MyHtmlPanel(wx.Panel):
 		self.m1 = wx.Menu()
 
 		self.itm2 = wx.MenuItem( self.m1, wx.ID_ANY, u"Show O'Clock and Calendar", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.AppendItem( self.itm2 )
+		self.m1.Append( self.itm2 )
 		self.itm2.Check( True )
 
 		self.itm3 = wx.MenuItem( self.m1, wx.ID_ANY, u"Pan of Input Information", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.AppendItem( self.itm3 )
+		self.m1.Append( self.itm3 )
 		self.itm3.Check( True )
 
 		self.itm4 = wx.MenuItem( self.m1, wx.ID_ANY, u"Pan of Do it working", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.AppendItem( self.itm4 )
+		self.m1.Append( self.itm4 )
 		self.itm4.Check( True )
 
 

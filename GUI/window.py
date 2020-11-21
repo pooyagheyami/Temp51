@@ -69,7 +69,7 @@ class MainWin(wx.Frame):
         #Show aui panels============== 
 
         #Aui Panels of Program==================
-        self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
         self.m_mgr = wx.aui.AuiManager()
         self.m_mgr.SetManagedWindow( self )
         self.m_mgr.SetFlags(wx.aui.AUI_MGR_DEFAULT)

@@ -9,7 +9,7 @@ from  Config.Init import *
 class telframe(wx.Frame):
     def __init__(self,parent):
         wx.Frame.__init__(self,parent,style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)
-        self.parent=parent
+        self.parent = parent
 
         txt = thistxt('disit.txt')
         btn = u'ok'
@@ -26,7 +26,7 @@ def size():
 def main(panel=None ):
     locale = wx.Locale(wx.LANGUAGE_ENGLISH)
     
-    parent =  panel.GetParent()
+    parent = panel.GetParent()
     
     frame = telframe(parent )
     frame.SetTitle(u'Note')

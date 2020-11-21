@@ -79,7 +79,8 @@ class MySplashScreen(wx.adv.SplashScreen):
         #                               AS.AS_SHADOW_BITMAP
         #                               ,shadowcolour=shadow )
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.fc = wx.FutureCall(2000, self.ShowMain)
+        #self.fc = wx.FutureCall(2000, self.ShowMain)
+        self.fc = wx.CallLater(2000, self.ShowMain)
 
     def OnClose(self, evt):
         # Make sure the default handler runs too so this window gets

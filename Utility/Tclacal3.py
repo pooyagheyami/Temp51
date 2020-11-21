@@ -490,7 +490,7 @@ class MyFrame1 ( wx.Frame ):
     def __init__( self, parent ):
         wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 200,200 ), style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
-        self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
         self.bS1 = wx.BoxSizer( wx.HORIZONTAL )
 

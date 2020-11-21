@@ -29,19 +29,19 @@ class Mymenu(object):
 
 
 def DoProgram(item):
-    #print item
+    #print item  # Get item from menu
     M = Mymenu()
     
-    p=M.program(item)
-    d=M.menudir(item)
+    p = M.program(item)
+    d = M.menudir(item)
 
     I = M.Dohndlr()
     #print I
-    Ii =[]
+    Ii = []
     for it in I:
         Ii.append(it[0])
     #print Ii
-    a=d+'.'+p
+    a = d+'.'+p
     #i = __import__(a,globals(),locals(),Ii,0)
     i = importlib.import_module(a)
     #print dir(i)
