@@ -53,7 +53,7 @@ class MainWin(wx.Frame):
         sps = 1
         bps = 1
         tps = 1
-        BGF = "Mypic2.jpg"
+        BGF = "V10.jpg"
 
 
         #Menu of Program============== 

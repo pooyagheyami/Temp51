@@ -84,3 +84,13 @@ class SetData:
     def Additem2(self, send, data):
         return sq.wxsqins2('Menu.db', 'mitem', send, data)
 
+    def Upditem(self, send, data):
+        return sq.wxsqlup('Menu.db', 'mitem', send, data)
+
+    def Upditem2(self, send, data):
+        return sq.wxsqlup2('Menu.db', 'mitem', send, data)
+
+    def Delitem(self, data):
+        return sq.wxsqdel('Menu.db', 'mitem', data)
+
+
