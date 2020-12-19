@@ -16,6 +16,7 @@ class Get:
     def openSql(self, sqlfile):
         with open(sqlfile) as f:
             alltxt = f.readlines()
+        print(alltxt)
         return alltxt
 
     def GetFromDbf(self):

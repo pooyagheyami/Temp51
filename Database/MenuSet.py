@@ -39,6 +39,8 @@ class GetData:
         return sq.wxsqltxt(self.DBF, """SELECT menubar.mbardir
                                         FROM menubar
                                         """)
+    def AllBar(self):
+        return sq.wxsqltxt(self.DBF,"""SELECT * FROM menubar""")
 
     def RevItem(self):
         return sq.wxsqltxt(self.DBF,"""select mitem.itemname,mitem.itemid 
