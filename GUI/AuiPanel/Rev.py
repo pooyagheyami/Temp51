@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Windows and Panels main Frame File
 #! /usr/bin/env python
-# -*- codnig: utf-8 -*-
+
 import wx
 import Database.wxsq as DB
 #import Database.wxsq as SQ

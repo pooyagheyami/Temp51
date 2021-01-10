@@ -41,7 +41,7 @@ data_files = [('GUI\AuiPanel', ['E:\\Mywork\\tamil\\Temp4\\GUI\\AuiPanel\\__init
                         'E:\\Mywork\\tamil\\Temp4\\Logs\\disit.txt',
                         'E:\\Mywork\\tamil\\Temp4\\Logs\\file2.txt']),
               ('Database', ['E:\\Mywork\\tamil\\Temp4\\Database\\__init__.pyc',
-                            'E:\\Mywork\\tamil\\Temp4\\Database\\Menu.db',
+                            'E:\\Mywork\\tamil\\Temp4\\Database\\Menu2.db',
                             'E:\\Mywork\\tamil\\Temp4\\Database\\wxsq.pyc']),
               ('GUI', ['E:\\Mywork\\tamil\\Temp4\\GUI\\__init__.pyc',
                        'E:\\Mywork\\tamil\\Temp4\\GUI\\BG.pyc',

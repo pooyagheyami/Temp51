@@ -11,7 +11,7 @@ import wx
 import wx.xrc
 import wx.dataview
 
-import Database.MenuSet as MS
+import Database.MenuSet2 as MS
 
 ###########################################################################
 ## Class MyPanel1
@@ -38,7 +38,7 @@ class MyPanel1 ( wx.Panel ):
 
         Vsz2.Add( self.TLCtrl1, 1, wx.EXPAND |wx.ALL, 5 )
 
-        self.MyMenu = MS.GetData(u'Menu.db', u'')
+        self.MyMenu = MS.GetData(u'Menu2.db', u'')
         broot = self.TLCtrl1.GetRootItem()
         roots = self.MyMenu.AllBar()
 

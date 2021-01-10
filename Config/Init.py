@@ -32,6 +32,9 @@ GUI_PATH      = os.path.join(MAP,opj(u'GUI')+SLASH)
 RES_PATH      = os.path.join(MAP,opj(u'Res')+SLASH)
 
 ICONS_PATH    = os.path.join(RES_PATH,opj(u'Icons')+SLASH)
+ICON16_PATH   = os.path.join(ICONS_PATH,opj(u'16x16')+SLASH)
+ICON32_PATH   = os.path.join(ICONS_PATH,opj(u'32x32')+SLASH)
+
 PICS_PATH     = os.path.join(RES_PATH,opj(u'Pics')+SLASH)
 SPALSH_PATH   = os.path.join(RES_PATH,opj(u'Splash')+SLASH)
 

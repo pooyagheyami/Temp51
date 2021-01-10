@@ -24,7 +24,7 @@ def size():
 
 
 def main(panel=None):
-    locale = wx.Locale(wx.LANGUAGE_ENGLISH)
+    #locale = wx.Locale(wx.LANGUAGE_ENGLISH)
 
     parent = panel.GetParent()
 

@@ -11,8 +11,9 @@ class GetData:
         self.sends = sends
 
     def ShowItem(self, ibar=1):
-        return sq.wxsqltxt(self.DBF, """select mitem.id,mitem.itemid,mitem.mbarid,mitem.itemname,mitem.handler
+        return sq.wxsqltxt(self.DBF, """select mitem.extid, mitem.itemid,mitem.mbarid,mitem.itemname,handler.prgname
                                         from mitem
+                                        left join handler on handler.handlerid = mitem.handlerid
                                         where mitem.mbarid = %d
                                         """ % ibar)
 
@@ -26,12 +27,13 @@ class GetData:
         return sq.wxsqltxt(self.DBF, """ SELECT *
                                          FROM menubar,access
                                          where menubar.acclvlid = access.acclvlid
-                                         and access.acclevl = '%s'
+                                         and access.acclvl = '%s'
                                          """ % Access)
 
-    def AmenuItm(self, barid=1):
-        return sq.wxsqltxt(self.DBF, """SELECT DISTINCT mitem.itemid,mitem.itemname,mitem.status
-                     FROM mitem,menubar
+    def AmenuItm(self, barid=101):
+        return sq.wxsqltxt(self.DBF, """SELECT DISTINCT mitem.itemid,mitem.itemname,extended.status,extended.shortcut,extended.icon
+                     FROM mitem
+                     left join extended on mitem.extid = extended.extid
                      WHERE mitem.mbarid = %d
                      ORDER BY mitem.itemid  """ % barid)
 
@@ -51,8 +53,8 @@ class GetData:
         """)
 
     def MyProg(self,itemid=''):
-        return sq.wxsqltxt(self.DBF,"""SELECT mitem.itemid, mitem.handler
-            FROM mitem
+        return sq.wxsqltxt(self.DBF,"""SELECT distinct mitem.handlerid, handler.prgname
+            FROM mitem join handler on mitem.handlerid = handler.handlerid
             WHERE mitem.itemid = %s  """ %itemid)
 
     def MnuDir(self,itemid=''):
@@ -62,15 +64,28 @@ class GetData:
               WHERE mitem.itemid =  %s  """ %itemid)
 
     def DoHdnl(self):
-        return sq.wxsqltxt(self.DBF,"""select mitem.handler
-          from mitem
-          WHERE  mitem.handler  notnull """)
+        return sq.wxsqltxt(self.DBF,"""select handler.prgname
+          from handler join mitem on mitem.handlerid = handler.handlerid
+          WHERE  mitem.handlerid  notnull """)
 
     def GetTB(self):
-        return sq.wxsqltxt(self.DBF,"""select itemid,tbname,icondir,status,handler from toolbar """)
+        return sq.wxsqltxt(self.DBF,"""select toolbar.toolid,toolbar.toolname,toolbar.toolicon,toolbar.shrttxt,handler.prgname 
+                                       from toolbar left join handler
+                                       on toolbar.handlerid = handler.handlerid """)
 
     def GetAllTB(self):
         return sq.wxsqltxt(self.DBF,""" select * from toolbar """)
+
+    def MyTogr(self,itolid=''):
+        return sq.wxsqltxt(self.DBF,"""SELECT distinct toolbar.handlerid, handler.prgname
+            FROM toolbar join handler on toolbar.handlerid = handler.handlerid
+            WHERE toolbar.toolid = %s  """ %itolid)
+
+    def TolDir(self,itolid=''):
+        return sq.wxsqltxt(self.DBF, """ select distinct menubar.mbardir , mitem.handlerid
+            from menubar, toolbar  inner join mitem on mitem.handlerid = toolbar.handlerid
+            where menubar.mbarid = mitem.mbarid
+            and toolbar.toolid =  %s  """ % itolid)
 
 
 
@@ -81,18 +96,18 @@ class SetData:
         self.data = data
 
     def Additem(self, send, data):
-        return sq.wxsqins('Menu.db', 'mitem', send, data)
+        return sq.wxsqins('Menu2.db', 'mitem', send, data)
 
     def Additem2(self, send, data):
-        return sq.wxsqins2('Menu.db', 'mitem', send, data)
+        return sq.wxsqins2('Menu2.db', 'mitem', send, data)
 
     def Upditem(self, send, data):
-        return sq.wxsqlup('Menu.db', 'mitem', send, data)
+        return sq.wxsqlup('Menu2.db', 'mitem', send, data)
 
     def Upditem2(self, send, data):
-        return sq.wxsqlup2('Menu.db', 'mitem', send, data)
+        return sq.wxsqlup2('Menu2.db', 'mitem', send, data)
 
     def Delitem(self, data):
-        return sq.wxsqdel('Menu.db', 'mitem', data)
+        return sq.wxsqdel('Menu2.db', 'mitem', data)
 
 

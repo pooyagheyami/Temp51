@@ -3,7 +3,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Database.MenuSet as MS
+import Database.MenuSet2 as MS
 import wx
 import wx.aui
 
@@ -25,7 +25,7 @@ class MainToolAui():
             if str(tb[1]) == '' or tb[1] == None:
                 self.myTool.AddSeparator()
             else:
-                self.mytb.append( self.myTool.AddTool(int(tb[0]), str(tb[1]),wx.Bitmap(ICONS_PATH+tb[2], wx.BITMAP_TYPE_ANY),
+                self.mytb.append( self.myTool.AddTool(int(tb[0]), str(tb[1]),wx.Bitmap(ICON32_PATH+tb[2], wx.BITMAP_TYPE_ANY),
                                                   wx.NullBitmap, wx.ITEM_NORMAL, str(tb[3]), wx.EmptyString, None) )
                 self.mytp[int(tb[0])] = str(tb[4])
 
@@ -38,7 +38,7 @@ class MainToolAui():
 
 class ToolData(object):
     def __init__(self):
-        self.MySql = MS.GetData(u'Menu.db', u'')
+        self.MySql = MS.GetData(u'Menu2.db', u'')
         self.ToSql = MS.SetData(u'', u'')
 
     def ToolBarData(self):
