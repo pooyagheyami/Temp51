@@ -21,6 +21,13 @@ class Mymenu(object):
 
     def menudir(self, itemid):
         self.directory = self.MySql.MnuDir(itemid)
+        if self.directory != [] :
+            return self.directory[0][0]
+        else:
+            return ''
+
+    def submndir(self, itemsub):
+        self.directory = self.MySql.SubDir(itemsub)
         return self.directory[0][0]
 
     def tooldir(self, itolid):
@@ -40,7 +47,15 @@ def DoProgram(item,MT):
 
     if MT == 'M':
         p = M.program(item)
-        d = M.menudir(item)
+        if M.menudir(item) != '':
+            d = M.menudir(item)
+        else:
+
+            if M.submndir(item) == '100':
+                d = 'GUI.Temp'
+            else:
+                d = M.menudir(int(M.submndir(item)[0][0]))
+
     elif MT == 'T':
         p = M.toogram(item)
         d = M.tooldir(item)

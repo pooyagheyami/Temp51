@@ -4,17 +4,17 @@
 
 import wx
 import GUI.API.Pnl0 as Pnl0
-from Config.Init import *
+from  Config.Init import *
 
 class telframe(wx.Frame):
-    def __init__(self, parent):
-        wx.Frame.__init__(self, parent, style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)
-        self.parent = parent
+    def __init__(self,parent):
+        wx.Frame.__init__(self,parent,style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)
+        self.parent=parent
 
         txt = thistxt('disit.txt')
         btn = u'ok'
                
-        self.panel = Pnl0.MyPanel1(self, txt, btn)
+        self.panel = Pnl0.MyPanel1(self,txt,btn)
 
         
     def closeit(self):
@@ -30,7 +30,7 @@ def main(panel=None ):
     
     frame = telframe(parent )
     frame.SetTitle(u'Note')
-    frame.SetSize((400,250))
+    frame.SetSize((300,160))
     frame.Show()
     
 

@@ -10,8 +10,10 @@
 import wx
 import wx.xrc
 import wx.dataview
+import wx.stc as stc
 
 import Database.MenuSet2 as MS
+import GUI.API.MitemFrm as MF
 
 ###########################################################################
 ## Class MyPanel1
@@ -49,7 +51,8 @@ class MyPanel1 ( wx.Panel ):
             self.TLCtrl1.SetItemText(grp_roots, 2, r[2])
             self.TLCtrl1.SetItemText(grp_roots, 3, r[3])
             items = self.MyMenu.ShowItem(r[0])
-            #print(items)
+            #items = self.MyMenu.AmenuItm(r[0])
+            print(items)
             for i in items:
                 chditm = self.TLCtrl1.AppendItem(grp_roots,'Items Menu')
                 self.TLCtrl1.SetItemText(chditm,0,str(i[1]))
@@ -90,7 +93,7 @@ class MyPanel1 ( wx.Panel ):
         Vsz3.Fit( self.pnl2 )
         self.Spw1.SplitVertically( self.pnl1, self.pnl2, 532 )
         Vsz1.Add( self.Spw1, 1, wx.EXPAND, 5 )
-
+        self.txt = stc.StyledTextCtrl()
 
         self.SetSizer( Vsz1 )
         self.Layout()
@@ -109,13 +112,19 @@ class MyPanel1 ( wx.Panel ):
 
     # Virtual event handlers, overide them in your derived class
     def DoshowItm( self, event ):
+        print(event)
         event.Skip()
 
     def Thismenu( self, event ):
+        print(event)
         event.Skip()
 
     def Additm( self, event ):
-        event.Skip()
+        self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
+        self.Pnl = MF.MyPanel1(self.Frm)
+        self.Frm.SetSize((700,360))
+        self.Frm.Show()
+        #event.Skip()
 
     def edititm( self, event ):
         event.Skip()

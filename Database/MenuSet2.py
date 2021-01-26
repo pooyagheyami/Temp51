@@ -31,7 +31,7 @@ class GetData:
                                          """ % Access)
 
     def AmenuItm(self, barid=101):
-        return sq.wxsqltxt(self.DBF, """SELECT DISTINCT mitem.itemid,mitem.itemname,extended.status,extended.shortcut,extended.icon
+        return sq.wxsqltxt(self.DBF, """SELECT DISTINCT mitem.itemid,mitem.itemname,extended.status,extended.shortcut,extended.icon,mitem.itemtyp
                      FROM mitem
                      left join extended on mitem.extid = extended.extid
                      WHERE mitem.mbarid = %d
@@ -62,6 +62,12 @@ class GetData:
               FROM mitem  JOIN menubar
               ON mitem.mbarid = menubar.mbarid
               WHERE mitem.itemid =  %s  """ %itemid)
+
+    def SubDir(self,itemsub=''):
+        return sq.wxsqltxt(self.DBF, """SELECT handler.prgdir
+              FROM mitem  JOIN handler
+              ON mitem.handlerid = handler.handlerid
+              WHERE mitem.itemid = %s  """ %itemsub)
 
     def DoHdnl(self):
         return sq.wxsqltxt(self.DBF,"""select handler.prgname

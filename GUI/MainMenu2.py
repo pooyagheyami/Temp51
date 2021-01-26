@@ -28,40 +28,63 @@ class MainMenu():
             #if eachMenuData[3] == '31cd':
             #    print(self.menuBar)
 
-
         # print self.menuBar
         return self.menuBar
 
     def createMenu(self, menuData):
         self.menu = wx.Menu()
         #print(menuData)
-        for eachId, eachLabel, eachStatus, shrtcut, echicon in menuData:
+        for echitem in menuData:
+            #print(echitem)
+            if type(echitem) != list:
+                eachId, eachLabel, eachStatus, shrtcut, echicon, mtype = echitem
 
-            if not eachLabel:
-                self.menu.AppendSeparator()
-                continue
-            if shrtcut != None:
-                itmlebl = eachLabel+u'\t'+shrtcut
+                if not eachLabel:
+                    self.menu.AppendSeparator()
+                    continue
+                if shrtcut != None:
+                    itmlebl = eachLabel + u'\t' + shrtcut
+                else:
+                    itmlebl = eachLabel
+
+                if mtype == 'C':
+                    self.menuItem = self.menu.AppendCheckItem(eachId, itmlebl, eachStatus)
+                elif mtype == 'R':
+                    self.menuItem = self.menu.AppendRadioItem(eachId, itmlebl)
+                elif mtype == 'N':
+                    self.menuItem = self.menu.Append(eachId, itmlebl, eachStatus)
+                else:
+                    print('mtype has a error')
+                if echicon != None:
+                    self.menuItem.SetBitmap(wx.Bitmap(ICON16_PATH + echicon, wx.BITMAP_TYPE_ANY))
+
             else:
-                itmlebl = eachLabel
-            self.menuItem = self.menu.Append(eachId, itmlebl, eachStatus)
-            if echicon != None:
-                self.menuItem.SetBitmap(wx.Bitmap(ICON16_PATH+echicon, wx.BITMAP_TYPE_ANY))
+                for ech in echitem:
+                    eachId, eachLabel, eachStatus, shrtcut, echicon, mtype = ech
+                    if mtype == 'S':
+                        iroot = self.createSubmenu(eachId)
+                        self.menuItem = self.menu.AppendSubMenu(iroot,eachLabel)
+                    else:
+                        self.menuItem =  iroot.Append(eachId,eachLabel,eachStatus)
+
 
         # print self.menu
         return self.menu
 
-    def createHandler(self):
+    def createSubmenu(self, mroot ):
+        mroot = wx.Menu()
+        return mroot
+
+    #def createHandler(self):
         # print self.menu.GetEventHandler()
-        return self.menu.GetEventHandler
+        #return self.menu.GetEventHandler
 
     def Onmenu(self, event):
         self.mid = event.GetId()
         # print self.GetItemId()
 
-
     def GetItemId(self):
-
+        #print(self.menuItem)
         return self.menuItem
 
 
@@ -79,10 +102,19 @@ class MenuData(object):
     def menuItem(self, i):
         self.bitm = self.MySql.AmenuItm(i)
         self.mitem = []
+        self.sitem = []
         for itm in self.bitm:
             #print(itm)
-            self.mitem.append(itm)
-        # print self.mitem
+            if itm[-1] == 'S':
+                self.sitem.append(itm)
+                stm = self.MySql.AmenuItm(itm[0])
+                for s in stm:
+                    self.sitem.append(s)
+                #self.mitem.append(itm)
+                self.mitem.append(self.sitem)
+            else:
+                self.mitem.append(itm)
+        #print( self.mitem)
         return self.mitem
 
     def menuDir(self):
