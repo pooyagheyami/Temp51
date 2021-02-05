@@ -93,6 +93,27 @@ class MyPanel1 ( wx.Panel ):
         Vsz3.Fit( self.pnl2 )
         self.Spw1.SplitVertically( self.pnl1, self.pnl2, 532 )
         Vsz1.Add( self.Spw1, 1, wx.EXPAND, 5 )
+
+        VL = wx.BoxSizer(wx.VERTICAL)
+
+        self.Line = wx.StaticLine(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL)
+        VL.Add(self.Line, 0, wx.EXPAND | wx.ALL, 5)
+
+        Vsz1.Add(VL, 0, wx.EXPAND, 5)
+
+        Hz1 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.btna = wx.Button(self, wx.ID_ANY, u"New Bar", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hz1.Add(self.btna, 0, wx.ALL, 5)
+
+        self.btnb = wx.Button(self, wx.ID_ANY, u"Change Bar", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hz1.Add(self.btnb, 0, wx.ALL, 5)
+
+        self.btnc = wx.Button(self, wx.ID_ANY, u"Delete Bar", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hz1.Add(self.btnc, 0, wx.ALL, 5)
+
+        Vsz1.Add(Hz1, 0, wx.EXPAND, 5)
+
         self.txt = stc.StyledTextCtrl()
 
         self.SetSizer( Vsz1 )
@@ -105,6 +126,9 @@ class MyPanel1 ( wx.Panel ):
         self.btn2.Bind( wx.EVT_BUTTON, self.edititm )
         self.btn3.Bind( wx.EVT_BUTTON, self.delitm )
         self.btn4.Bind( wx.EVT_BUTTON, self.aplyit )
+        self.btna.Bind(wx.EVT_BUTTON, self.Nbar)
+        self.btnb.Bind(wx.EVT_BUTTON, self.Cbar)
+        self.btnc.Bind(wx.EVT_BUTTON, self.Dbar)
 
     def __del__( self ):
         pass
@@ -135,9 +159,131 @@ class MyPanel1 ( wx.Panel ):
     def aplyit( self, event ):
         event.Skip()
 
+    def Nbar(self, event):
+        self.Frm = wx.Dialog(self)
+        self.Pnl = MyPanel3(self.Frm)
+        self.Frm.SetSize((500, 180))
+        self.Frm.ShowModal()
+        self.Frm.Destroy()
+
+    def Cbar(self, event):
+        self.Frm = wx.Dialog(self)
+        self.Pnl = MyPanel3(self.Frm)
+        self.Frm.SetSize((500, 180))
+        self.Frm.ShowModal()
+        self.Frm.Destroy()
+
+    def Dbar(self, event):
+        self.Frm = wx.Dialog(self)
+        self.Pnl = MyPanel3(self.Frm)
+        self.Frm.SetSize((500, 180))
+        self.Frm.ShowModal()
+        self.Frm.Destroy()
+
     def Spw1OnIdle( self, event ):
         self.Spw1.SetSashPosition( 532 )
         self.Spw1.Unbind( wx.EVT_IDLE )
 
 
 
+###########################################################################
+## Class MyPanel3
+###########################################################################
+
+class MyPanel3 ( wx.Panel ):
+
+    def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,180 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+        wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
+
+        bSizer8 = wx.BoxSizer( wx.VERTICAL )
+
+        bSizer9 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.m_staticText11 = wx.StaticText( self, wx.ID_ANY, u"Bar name", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_staticText11.Wrap( -1 )
+
+        bSizer9.Add( self.m_staticText11, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+        self.m_textCtrl8 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer9.Add( self.m_textCtrl8, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+        bSizer8.Add( bSizer9, 1, wx.EXPAND, 5 )
+
+        bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.m_staticText12 = wx.StaticText( self, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_staticText12.Wrap( -1 )
+
+        bSizer10.Add( self.m_staticText12, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+        self.m_dirPicker2 = wx.DirPickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE|wx.DIRP_SMALL )
+        bSizer10.Add( self.m_dirPicker2, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+        bSizer8.Add( bSizer10, 1, wx.EXPAND, 5 )
+
+        bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.m_checkBox3 = wx.CheckBox( self, wx.ID_ANY, u"Disable", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer11.Add( self.m_checkBox3, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+        self.m_checkBox4 = wx.CheckBox( self, wx.ID_ANY, u"Hiden", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer11.Add( self.m_checkBox4, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+        bSizer8.Add( bSizer11, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
+
+        bSizer12 = wx.BoxSizer( wx.HORIZONTAL )
+
+
+        bSizer12.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+        self.m_button21 = wx.Button( self, wx.ID_ANY, u"Cancle", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer12.Add( self.m_button21, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+        self.m_button19 = wx.Button( self, wx.ID_ANY, u"Change", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer12.Add( self.m_button19, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+        self.m_button20 = wx.Button( self, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer12.Add( self.m_button20, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+        bSizer8.Add( bSizer12, 1, wx.EXPAND, 5 )
+
+
+        self.SetSizer( bSizer8 )
+        self.Layout()
+
+        # Connect Events
+        self.m_dirPicker2.Bind( wx.EVT_DIRPICKER_CHANGED, self.bardir )
+        self.m_checkBox3.Bind( wx.EVT_CHECKBOX, self.disbar )
+        self.m_checkBox4.Bind( wx.EVT_CHECKBOX, self.hidbar )
+        self.m_button21.Bind( wx.EVT_BUTTON, self.cancl )
+        self.m_button19.Bind( wx.EVT_BUTTON, self.chngbar )
+        self.m_button20.Bind( wx.EVT_BUTTON, self.addbar )
+
+    def __del__( self ):
+        pass
+
+
+    # Virtual event handlers, overide them in your derived class
+    def bardir( self, event ):
+        event.Skip()
+
+    def disbar( self, event ):
+        event.Skip()
+
+    def hidbar( self, event ):
+        event.Skip()
+
+    def cancl( self, event ):
+        q = self.GetParent()
+        q.Close()
+        #event.Skip()
+
+    def chngbar( self, event ):
+        event.Skip()
+
+    def addbar( self, event ):
+        event.Skip()

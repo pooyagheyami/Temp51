@@ -18,7 +18,7 @@ import GUI.AuiPanel.Stat as SP
 import GUI.AuiPanel.PAui as PA
 import importlib
 
-import GUI.BG as BG
+import GUI.BG2 as BG
 
 #import Config.basedata as bs
 #import Utility.massage as ms
@@ -70,7 +70,10 @@ class MainWin(wx.Frame):
         #Enable or Disable Menu==========================
         #imenu.EnableTop(3, False)
 
-        #Show aui panels============== 
+        #Show aui panels==============
+
+
+
 
         #Aui Panels of Program==================
         self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
@@ -81,17 +84,21 @@ class MainWin(wx.Frame):
         # Create Tool Bars=======================
         #tool = MT.MainTool(self, -1, wx.DefaultPosition, wx.DefaultSize,
          #                     wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_TEXT)
-        tool = MT.MainToolAui(self)
+        #tool = MT.MainToolAui(self)
 
         #self.m_mgr.AddPane(tool[0],wx.aui.AuiPaneInfo().Name(tool).Caption("Tool bar").
         #                   ToolbarPane().Top().Row(1).LeftDockable(False).RightDockable(False))
         #print(tool.myTool)
-        self.m_mgr.AddPane(tool.myTool,wx.aui.AuiPaneInfo().Top().PinButton(True).Dock().Resizable().FloatingSize(wx.Size(122, 260)).Layer(1))
+        #self.m_mgr.AddPane(tool.myTool,wx.aui.AuiPaneInfo().Top().PinButton(True).Dock().Resizable().FloatingSize(wx.Size(122, 260)).Layer(1))
 
-        self.Bind(wx.EVT_TOOL_RANGE,self.OnTool,id=tool.mytb[0].GetId(),id2=tool.mytb[-1].GetId())
+        #self.Bind(wx.EVT_TOOL_RANGE,self.OnTool,id=tool.mytb[0].GetId(),id2=tool.mytb[-1].GetId())
         #self.Bind(wx.EVT_TOOL,self.OnTool,id=tool.mytb[0].GetId())
-
-
+        tool = MT.MyToolbar(self)
+        tool.SetToolBitmapSize(wx.Size(24,24))
+        tool.Realize()
+        self.m_mgr.AddPane(tool, wx.aui.AuiPaneInfo().Name("tb1").Caption("Toolbar").
+                          ToolbarPane().Top().LeftDockable(False).RightDockable(False))
+        self.Bind(wx.EVT_TOOL_RANGE, self.OnTool, id=tool.mytb[0].GetId(), id2=tool.mytb[-1].GetId())
         #panel revnue======================
         self.Repnl(rps)
         #Panel report=======================
@@ -207,8 +214,9 @@ class MainWin(wx.Frame):
             self.owin.Hide()
 
     def BGrnd(self,BPS,BGF):
-        self.bmpwin = BG.MyHtmlPanel(self,wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL , BGF)    
+        #self.bmpwin = BG.MyHtmlPanel(self,wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL , BGF)    
         #self.htmlwin = BG.MyHtmlPanel(self,wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.html.HW_SCROLLBAR_AUTO )
+        self.bmpwin = BG.BGPanel(self,BGF)
         self.m_mgr.AddPane( self.bmpwin, wx.aui.AuiPaneInfo() .Right() .Center() .CloseButton( False ).Dock().Resizable().FloatingSize( wx.Size( 800,600 )) )
         #print self.bmpwin.GetSize()
         if BPS == 1 :
@@ -257,5 +265,3 @@ class MainWin(wx.Frame):
             sps = 0
             self.m_mgr.GetPane(self.Stap).Hide()
         self.m_mgr.Update()
-
-        

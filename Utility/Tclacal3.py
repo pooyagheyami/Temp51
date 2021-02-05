@@ -90,6 +90,9 @@ class MyPanel2 ( wx.Panel ):
         self.caltext = []
         if len(label) == 5:
             label.append([0,0,0,0,0,0,0])
+        if len(label) == 4:
+            label.append([0,0,0,0,0,0,0])
+            label.append([0,0,0,0,0,0,0])
 
         for row in range(6):
             for clm in range(7):
@@ -135,14 +138,14 @@ class MyPanel2 ( wx.Panel ):
             self.sallat=self.sallat+1
             self.mahlat=1
 
-            mah =  Month_name[self.mahlat-1]
-            self.mbtn.SetLabel(mah+' '+str(self.sallat))
-            self.calgrid()
+        mah =  Month_name[self.mahlat-1]
+        self.mbtn.SetLabel(mah+' '+str(self.sallat))
+        self.calgrid()
 
-            self.HideWithEffect(5,200)
-            self.ShowWithEffect(5,200)
-            self.Refresh()
-            self.Layout()
+        self.HideWithEffect(5,200)
+        self.ShowWithEffect(5,200)
+        self.Refresh()
+        self.Layout()
 
     def Onbak( self, event ):
         self.mahlat=self.mahlat-1
@@ -150,20 +153,23 @@ class MyPanel2 ( wx.Panel ):
             self.sallat=self.sallat-1
             self.mahlat=12
 
-            mah =  Month_name[self.mahlat-1]
-            self.mbtn.SetLabel(mah+' '+str(self.sallat))
+        mah =  Month_name[self.mahlat-1]
+        self.mbtn.SetLabel(mah+' '+str(self.sallat))
 
-            self.calgrid()
-            self.HideWithEffect(6,200)
-            self.ShowWithEffect(6,200)
-            self.Refresh()
-            self.Layout()
+        self.calgrid()
+        self.HideWithEffect(6,200)
+        self.ShowWithEffect(6,200)
+        self.Refresh()
+        self.Layout()
 
     def calgrid(self):
         label = calendar.monthcalendar(self.sallat,self.mahlat)
         i=0
         #self.caltext = []
         if len(label) == 5:
+            label.append([0,0,0,0,0,0,0])
+        if len(label) == 4:
+            label.append([0,0,0,0,0,0,0])
             label.append([0,0,0,0,0,0,0])
 
         for row in range(6):

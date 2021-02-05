@@ -35,7 +35,7 @@ class GetData:
                      FROM mitem
                      left join extended on mitem.extid = extended.extid
                      WHERE mitem.mbarid = %d
-                     ORDER BY mitem.itemid  """ % barid)
+                       """ % barid)  #ORDER BY mitem.itemid
 
     def DirBar(self):
         return sq.wxsqltxt(self.DBF, """SELECT menubar.mbardir

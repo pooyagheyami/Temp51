@@ -46,3 +46,27 @@ class ToolData(object):
         for row in self.MySql.GetTB():
             self.mTBar.append(row)
         return self.mTBar
+
+
+class MyToolbar(wx.ToolBar):
+    def __init__(self,parent,id=wx.ID_ANY,pos=wx.DefaultPosition,size=wx.DefaultSize,style=wx.TB_HORIZONTAL ):
+        wx.ToolBar.__init__(self,parent,style=style)
+        self.mytb = []
+        self.mytp = {}
+        self.CreatTool()
+
+    def CreatTool(self):
+
+        for tb in ToolData().ToolBarData():
+            if str(tb[1]) == '' or tb[1] == None:
+                self.AddSeparator()
+            else:
+                self.mytb.append( self.AddTool(int(tb[0]), str(tb[1]),wx.Bitmap(ICON32_PATH+tb[2], wx.BITMAP_TYPE_ANY),
+                                               wx.NullBitmap, wx.ITEM_NORMAL, str(tb[3]), wx.EmptyString, None) )
+                self.mytp[int(tb[0])] = str(tb[4])
+
+        #print(self.mytp)
+        self.Realize()
+
+    def GetToolid(self):
+        return 101
