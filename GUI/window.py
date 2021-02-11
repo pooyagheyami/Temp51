@@ -88,17 +88,9 @@ class MainWin(wx.Frame):
 
         #self.m_mgr.AddPane(tool[0],wx.aui.AuiPaneInfo().Name(tool).Caption("Tool bar").
         #                   ToolbarPane().Top().Row(1).LeftDockable(False).RightDockable(False))
-        #print(tool.myTool)
         #self.m_mgr.AddPane(tool.myTool,wx.aui.AuiPaneInfo().Top().PinButton(True).Dock().Resizable().FloatingSize(wx.Size(122, 260)).Layer(1))
+        self.ToolPnl()
 
-        #self.Bind(wx.EVT_TOOL_RANGE,self.OnTool,id=tool.mytb[0].GetId(),id2=tool.mytb[-1].GetId())
-        #self.Bind(wx.EVT_TOOL,self.OnTool,id=tool.mytb[0].GetId())
-        tool = MT.MyToolbar(self)
-        tool.SetToolBitmapSize(wx.Size(24,24))
-        tool.Realize()
-        self.m_mgr.AddPane(tool, wx.aui.AuiPaneInfo().Name("tb1").Caption("Toolbar").
-                          ToolbarPane().Top().LeftDockable(False).RightDockable(False))
-        self.Bind(wx.EVT_TOOL_RANGE, self.OnTool, id=tool.mytb[0].GetId(), id2=tool.mytb[-1].GetId())
         #panel revnue======================
         self.Repnl(rps)
         #Panel report=======================
@@ -119,7 +111,7 @@ class MainWin(wx.Frame):
 
         #if user.Checkpass() != 'OK':
         #    print 'quit'
-
+        #self.Bind(wx.EVT_RIGHT_DOWN,self.mouseclick)
         #Show other win in main windows==============
         '''
         if C == 1:
@@ -165,6 +157,24 @@ class MainWin(wx.Frame):
         #self.Stap.Layout()
         #self.m_mgr.Update()
 	    #self.Centre( wx.BOTH )
+
+    def ToolPnl(self):
+        self.tool = []
+        MTBL = MT.ToolData()
+        MLT = MTBL.ToolBarList()
+        i = 0
+        for T in MLT:
+            #print(MLT[T])
+            MTB = MT.MyToolbar(self)
+            MyTL = MTB.data
+            print(MyTL)
+            self.tool.append( MTB.CreatTool(MLT[T]) )
+            self.tool[i].SetToolBitmapSize(wx.Size(24, 24))
+            self.tool[i].Realize()
+            self.m_mgr.AddPane(self.tool[i], wx.aui.AuiPaneInfo().Name("tb"+str(i)).Caption("Toolbar").
+                           ToolbarPane().Top().LeftDockable(False).RightDockable(False))
+            self.Bind(wx.EVT_TOOL_RANGE, self.OnTool, id=self.tool[i].mytb[0].GetId(), id2=self.tool[i].mytb[-1].GetId())
+            i += 1
 
     def APnls(self):
         self.Pnls = []
@@ -227,9 +237,10 @@ class MainWin(wx.Frame):
         self.m_mgr.Bind(wx.EVT_CONTEXT_MENU,self.printit)
         #self.bmpwin.Bind(wx.EVT_CONTEXT_MENU,self.printit)
         #self.m_mgr.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
-        self.bmpwin.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
+        #self.bmpwin.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
 
-
+    def mouseclick(self,event):
+        print(event)
 
     def printit(self,event):
         #print self.bmpwin.showhide()

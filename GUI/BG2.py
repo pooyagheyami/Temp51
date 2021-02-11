@@ -42,6 +42,7 @@ class BGPanel(wx.Panel):
 		#self.Layout()
 
 		# Connect Events
+
 		self.Bind( wx.EVT_RIGHT_DOWN, self.m_bitmap4OnContextMenu )
 		self.Bind(wxaui.EVT_AUI_RENDER, self.OnEraseBackground)
 
@@ -51,7 +52,8 @@ class BGPanel(wx.Panel):
 	# Virtual event handlers, overide them in your derived class
 
 	def m_bitmap4OnContextMenu( self, event ):
-		self.m_bitmap4.PopupMenu( self.m1, event.GetPosition() )
+		#print('mouse')
+		self.PopupMenu( self.m1, event.GetPosition() )
 		#print self.itm1.IsChecked(),self.itm2.IsChecked()
 		#print self.itm3.IsChecked(),self.itm4.IsChecked()
 
@@ -59,15 +61,14 @@ class BGPanel(wx.Panel):
 		return [self.itm2.IsChecked(),self.itm3.IsChecked(),self.itm4.IsChecked()]
 
 	def OnEraseBackground(self, evt):
-                # yanked from ColourDB.py
-                #print(evt)
-                dc = evt.GetDC()
-
-                if not dc:
-                        dc = wx.ClientDC(self)
-                        rect = self.GetUpdateRegion().GetBox()
-                        dc.SetClippingRect(rect)
-                dc.Clear()
-                bmp = wx.Bitmap(PICS_PATH+self.BGfile)
-
-                dc.DrawBitmap(bmp, 0, 0)
+		# yanked from ColourDB.py
+		#print(evt)
+		dc = evt.GetDC()
+		if not dc:
+			dc = wx.ClientDC(self)
+			rect = self.GetUpdateRegion().GetBox()
+			#dc.SetClippingRect(rect)
+			dc.SetClippingRegion(rect)
+		dc.Clear()
+		bmp = wx.Bitmap(PICS_PATH+self.BGfile)
+		dc.DrawBitmap(bmp, 0, 0)
