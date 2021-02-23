@@ -75,8 +75,8 @@ class WXDB(object):
         return self.cursor.fetchmany()
 
 class SQLite(object):
-    def __init__(self,tabels,fields,values):
-        self.tabels=tabels
+    def __init__(self,tables,fields,values):
+        self.tables=tables
         self.fields=fields
         self.values=values
 
@@ -85,7 +85,7 @@ class SQLite(object):
         return sql
 
     def insert(self,**karg):
-        sql = 'insert into '+str(self.tabels)
+        sql = 'insert into '+str(self.tables)
         sql = sql+ '('+str(self.fields)+')'
 
         sql = sql +' values '+'('+'?,'*(len(self.fields.split(','))-1)+'?)'
@@ -93,17 +93,17 @@ class SQLite(object):
         return sql
 
     def select(self,*arg,**karg):
-        sql =  ' select '+self.fields+' from '+self.tabels
+        sql =  ' select '+self.fields+' from '+self.tables
         #print sql
         return sql
 
     def select1(self,*arg,**karg):
-        sql =  ' select distinct'+self.fields+' from '+self.tabels+' where '+self.values
+        sql =  ' select distinct'+self.fields+' from '+self.tables+' where '+self.values
         #print sql
         return sql
 
     def update(self,**karg):
-        sql = ' update '+self.tabels+' set '+self.fields
+        sql = ' update '+self.tables+' set '+self.fields
         #print sql
         return sql
 
@@ -112,7 +112,7 @@ class SQLite(object):
         return sql
 
     def delete(self,**karg):
-        sql = ' delete from '+self.tabels+' where '+self.values
+        sql = ' delete from '+self.tables+' where '+self.values
         return sql
 
     def delall(self, **karg):

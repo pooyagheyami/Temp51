@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # In the name of God
 # Main Program Start
 #!/usr/bin/env python
@@ -13,8 +12,8 @@ import wx.html
 import GUI.MainMenu2 as MM
 import GUI.MainTool as MT
 
-import GUI.AuiPanel.Rev as RP
-import GUI.AuiPanel.Stat as SP
+
+#import GUI.AuiPanel.Stat as SP
 import GUI.AuiPanel.PAui as PA
 import importlib
 
@@ -50,7 +49,7 @@ class MainWin(wx.Frame):
         #sps = int(D[1])
         #bps = int(D[2])
         #tps = int(D[3])
-        rps = 1
+
         sps = 1
         bps = 1
         tps = 1
@@ -91,10 +90,8 @@ class MainWin(wx.Frame):
         #self.m_mgr.AddPane(tool.myTool,wx.aui.AuiPaneInfo().Top().PinButton(True).Dock().Resizable().FloatingSize(wx.Size(122, 260)).Layer(1))
         self.ToolPnl()
 
-        #panel revnue======================
-        self.Repnl(rps)
         #Panel report=======================
-        self.Stpnl(sps)
+        #self.Stpnl(sps)
         #All Panel Aui=======================
         self.APnls()
 
@@ -102,8 +99,7 @@ class MainWin(wx.Frame):
         
         self.BGrnd(bps,BGF)
 
-          
-                
+        self.Bind(wx.EVT_RIGHT_DOWN, self.printit)
 
         
         self.m_mgr.Update()
@@ -167,36 +163,37 @@ class MainWin(wx.Frame):
             #print(MLT[T])
             MTB = MT.MyToolbar(self)
             MyTL = MTB.data
-            print(MyTL)
+            #print(MyTL)
             self.tool.append( MTB.CreatTool(MLT[T]) )
             self.tool[i].SetToolBitmapSize(wx.Size(24, 24))
             self.tool[i].Realize()
             self.m_mgr.AddPane(self.tool[i], wx.aui.AuiPaneInfo().Name("tb"+str(i)).Caption("Toolbar").
-                           ToolbarPane().Top().LeftDockable(False).RightDockable(False))
+                           ToolbarPane().Top().LeftDockable(True).RightDockable(False))
             self.Bind(wx.EVT_TOOL_RANGE, self.OnTool, id=self.tool[i].mytb[0].GetId(), id2=self.tool[i].mytb[-1].GetId())
             i += 1
 
     def APnls(self):
         self.Pnls = []
         ML = PA.MyLstPnl()
+        FL = ML.GetAuiPro()
         for P in ML.GetAuiPnl():
             #print(P)
             if P != '__init__.py':
                 ii = importlib.import_module('GUI.AuiPanel.'+P[:-3])
                 mp = ii.MyPanel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
                 self.Pnls.append(mp)
-                self.m_mgr.AddPane(mp,wx.aui.AuiPaneInfo() .Right() .PinButton(True) .Dock() .Resizable() .FloatingSize(wx.Size(400,300)).Layer(2) )
 
+                if P in FL:
+                    PInfo = ML.GetAuiInfo(FL[P])
 
-    def Repnl(self,RPS):
-        self.Rpanel = RP.MyPanel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-        self.m_mgr.AddPane( self.Rpanel, wx.aui.AuiPaneInfo() .Left() .PinButton( True ).Dock().Resizable().FloatingSize( wx.Size( 200,400 ) ).Layer( 1 ) )
-        self.m_mgr.Bind(wx.EVT_BUTTON,self.OnMenu)
-        if RPS == 1 :
-            self.m_mgr.GetPane(self.Rpanel).Show()
-        elif RPS == 0:
-            self.m_mgr.GetPane(self.Rpanel).Hide()
-            
+                    if ' Size' in FL[P]:
+                        #print(FL[P][5])
+                        PInfo.FloatingSize(int(FL[P][5].strip().split(' ')[0]),int(FL[P][5].strip().split(' ')[1]))
+                    if ' Layer' in FL[P]:
+                        #print(FL[P][7])
+                        PInfo.Layer(int(FL[P][7].strip()))
+                    self.m_mgr.AddPane(mp,PInfo)
+    '''
     def Stpnl(self,SPS):
         lbel = [u'Description',u'Data',u'Input',u'Account',u'Code',u'Date']
         
@@ -210,7 +207,7 @@ class MainWin(wx.Frame):
             self.m_mgr.GetPane(self.Stap).Show()
         elif SPS == 0:
             self.m_mgr.GetPane(self.Stap).Hide()
-
+    '''
 
     def Clock(self,TPS):
         #self.owin = wx.Frame(self,-1,style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)
@@ -234,7 +231,7 @@ class MainWin(wx.Frame):
         elif BPS == 0:
             self.m_mgr.GetPane(self.bmpwin).Hide()
         #self.m_mgr.GetPane(self.htmlwin).Show()
-        self.m_mgr.Bind(wx.EVT_CONTEXT_MENU,self.printit)
+        #self.m_mgr.Bind(wx.EVT_CONTEXT_MENU,self.printit)
         #self.bmpwin.Bind(wx.EVT_CONTEXT_MENU,self.printit)
         #self.m_mgr.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
         #self.bmpwin.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
@@ -262,17 +259,4 @@ class MainWin(wx.Frame):
             except:
                 self.Clock(tps)
             
-        if self.bmpwin.showhide()[1]:
-            rps = 1
-            self.m_mgr.GetPane(self.Rpanel).Show()
-        elif not self.bmpwin.showhide()[1]:
-            rps = 0
-            self.m_mgr.GetPane(self.Rpanel).Hide()
-            
-        if self.bmpwin.showhide()[2]:
-            sps = 1
-            self.m_mgr.GetPane(self.Stap).Show()
-        elif not self.bmpwin.showhide()[2]:
-            sps = 0
-            self.m_mgr.GetPane(self.Stap).Hide()
         self.m_mgr.Update()

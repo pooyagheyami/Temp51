@@ -52,9 +52,9 @@ class BGPanel(wx.Panel):
 	# Virtual event handlers, overide them in your derived class
 
 	def m_bitmap4OnContextMenu( self, event ):
-		#print('mouse')
-		self.PopupMenu( self.m1, event.GetPosition() )
-		#print self.itm1.IsChecked(),self.itm2.IsChecked()
+		#self.PopupMenu( self.m1, event.GetPosition() )
+		self.PopupMenu(self.m1)
+		#print (self.itm3.IsChecked(),self.itm2.IsChecked())
 		#print self.itm3.IsChecked(),self.itm4.IsChecked()
 
 	def showhide(self):

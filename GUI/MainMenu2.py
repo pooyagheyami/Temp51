@@ -91,7 +91,7 @@ class MainMenu():
 class MenuData(object):
     def __init__(self):
         self.MySql = MS.GetData(u'Menu2.db', u'')
-        self.ToSql = MS.SetData(u'', u'')
+        self.ToSql = MS.SetData(u'', u'',u'')
 
     def menuBar(self):
         self.mbar = []

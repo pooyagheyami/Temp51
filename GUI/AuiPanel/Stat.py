@@ -16,7 +16,8 @@ class MyPanel(wx.Panel):
         wx.Panel.__init__ ( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 142,396 ), style = wx.TAB_TRAVERSAL )
 
         self.parent = parent
-        self.ndata=ndata
+        #self.ndata=ndata
+        self.ndata = [u'Description',u'Data',u'Input',u'Account',u'Code',u'Date']
         
         self.SetLayoutDirection(1)
         

@@ -15,6 +15,8 @@ import wx.stc as stc
 import Database.MenuSet2 as MS
 import GUI.API.MitemFrm as MF
 
+from Config.Init import *
+
 ###########################################################################
 ## Class MyPanel1
 ###########################################################################
@@ -41,30 +43,9 @@ class MyPanel1 ( wx.Panel ):
         Vsz2.Add( self.TLCtrl1, 1, wx.EXPAND |wx.ALL, 5 )
 
         self.MyMenu = MS.GetData(u'Menu2.db', u'')
-        broot = self.TLCtrl1.GetRootItem()
-        roots = self.MyMenu.AllBar()
+        self.DoMenu = MS.SetData(u'',u'',u'')
 
-        for r in roots:
-            grp_roots = self.TLCtrl1.AppendItem(broot,'Bar Menu')
-            self.TLCtrl1.SetItemText(grp_roots,0,str(r[0]))
-            self.TLCtrl1.SetItemText(grp_roots, 1, r[1])
-            self.TLCtrl1.SetItemText(grp_roots, 2, r[2])
-            self.TLCtrl1.SetItemText(grp_roots, 3, r[3])
-            items = self.MyMenu.ShowItem(r[0])
-            #items = self.MyMenu.AmenuItm(r[0])
-            print(items)
-            for i in items:
-                chditm = self.TLCtrl1.AppendItem(grp_roots,'Items Menu')
-                self.TLCtrl1.SetItemText(chditm,0,str(i[1]))
-                if i[3] == None or i[3] == '':
-                    self.TLCtrl1.SetItemText(chditm, 1, '---')
-                    self.TLCtrl1.SetItemText(chditm, 2, '---')
-                else:
-                    self.TLCtrl1.SetItemText(chditm, 1, str(i[3]))
-                    self.TLCtrl1.SetItemText(chditm, 2, str(i[4]))
-                #self.TLCtrl1.SetItemText(chditm, 3, str(i[4]))
-
-
+        self.fillList()
 
         self.pnl1.SetSizer( Vsz2 )
         self.pnl1.Layout()
@@ -122,6 +103,7 @@ class MyPanel1 ( wx.Panel ):
         # Connect Events
         self.TLCtrl1.Bind( wx.dataview.EVT_TREELIST_ITEM_CHECKED, self.DoshowItm )
         self.TLCtrl1.Bind( wx.dataview.EVT_TREELIST_ITEM_CONTEXT_MENU, self.Thismenu )
+        self.TLCtrl1.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.Thismenu)
         self.btn1.Bind( wx.EVT_BUTTON, self.Additm )
         self.btn2.Bind( wx.EVT_BUTTON, self.edititm )
         self.btn3.Bind( wx.EVT_BUTTON, self.delitm )
@@ -136,12 +118,48 @@ class MyPanel1 ( wx.Panel ):
 
     # Virtual event handlers, overide them in your derived class
     def DoshowItm( self, event ):
-        print(event)
+        print(event.GetEventObject())
+        print(dir(event.GetEventObject()))
+        print(event.GetEventObject().GetItemData())
         event.Skip()
 
     def Thismenu( self, event ):
-        print(event)
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0],0)
+        self.itmnam = self.TLCtrl1.GetItemText(ps[0],1)
+        self.itmdir = self.TLCtrl1.GetItemText(ps[0],2)
+        self.itmacc = self.TLCtrl1.GetItemText(ps[0],3)
+        if int(self.itmcod) < 1000 and int(self.itmcod)%10 == 1:
+            self.Cbar(None)
+        elif int(self.itmcod) > 1000:
+            print(self.itmnam)
+        else:
+            print(self.itmnam,self.itmcod)
         event.Skip()
+
+    def fillList(self):
+        broot = self.TLCtrl1.GetRootItem()
+        roots = self.MyMenu.AllBar()
+
+        for r in roots:
+            grp_roots = self.TLCtrl1.AppendItem(broot, 'Bar Menu')
+            self.TLCtrl1.SetItemText(grp_roots, 0, str(r[0]))
+            self.TLCtrl1.SetItemText(grp_roots, 1, r[1])
+            self.TLCtrl1.SetItemText(grp_roots, 2, r[2])
+            self.TLCtrl1.SetItemText(grp_roots, 3, r[3])
+            items = self.MyMenu.ShowItem(r[0])
+            # items = self.MyMenu.AmenuItm(r[0])
+            # print(items)
+            for i in items:
+                chditm = self.TLCtrl1.AppendItem(grp_roots, 'Items Menu')
+                self.TLCtrl1.SetItemText(chditm, 0, str(i[1]))
+                if i[3] == None or i[3] == '':
+                    self.TLCtrl1.SetItemText(chditm, 1, '---')
+                    self.TLCtrl1.SetItemText(chditm, 2, '---')
+                else:
+                    self.TLCtrl1.SetItemText(chditm, 1, str(i[3]))
+                    self.TLCtrl1.SetItemText(chditm, 2, str(i[4]))
+                # self.TLCtrl1.SetItemText(chditm, 3, str(i[4]))
 
     def Additm( self, event ):
         self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
@@ -149,6 +167,7 @@ class MyPanel1 ( wx.Panel ):
         self.Frm.SetSize((700,360))
         self.Frm.Show()
         #event.Skip()
+
 
     def edititm( self, event ):
         event.Skip()
@@ -161,23 +180,55 @@ class MyPanel1 ( wx.Panel ):
 
     def Nbar(self, event):
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm)
+        self.Pnl = MyPanel3(self.Frm,['','','','',[(u'',u'',u'',u'')]], 'Create')
         self.Frm.SetSize((500, 180))
+        self.Frm.SetTitle('New Menu Bar')
         self.Frm.ShowModal()
+        self.TLCtrl1.DeleteAllItems()
+        self.fillList()
+        self.Refresh()
+        self.Layout()
         self.Frm.Destroy()
 
     def Cbar(self, event):
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+        self.itmnam = self.TLCtrl1.GetItemText(ps[0], 1)
+        self.itmdir = self.TLCtrl1.GetItemText(ps[0], 2)
+        self.itmacc = self.TLCtrl1.GetItemText(ps[0], 3)
+        self.accrcd = self.MyMenu.Acclvl(self.itmacc)
+        dd = [self.itmnam,self.itmcod,self.itmacc,self.itmdir,self.accrcd]
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm)
+        self.Pnl = MyPanel3(self.Frm,dd,'Change')
         self.Frm.SetSize((500, 180))
+        self.Frm.SetTitle('Change Menu Bar')
         self.Frm.ShowModal()
+        self.TLCtrl1.DeleteAllItems()
+        self.fillList()
+        self.Refresh()
+        self.Layout()
         self.Frm.Destroy()
 
     def Dbar(self, event):
+
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+        self.itmnam = self.TLCtrl1.GetItemText(ps[0], 1)
+        self.itmdir = self.TLCtrl1.GetItemText(ps[0], 2)
+        self.itmacc = self.TLCtrl1.GetItemText(ps[0], 3)
+        self.accrcd = self.MyMenu.Acclvl(self.itmacc)
+        dd = [self.itmnam, self.itmcod, self.itmacc, self.itmdir,self.accrcd]
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm)
+        self.Pnl = MyPanel3(self.Frm,dd,'Delete')
         self.Frm.SetSize((500, 180))
+        self.Frm.SetTitle('Delete Menu Bar')
         self.Frm.ShowModal()
+        if self.Pnl.Action:
+            wx.MessageBox(u'Menu Bar and Access and Sub Item successfully Deleted')
+        self.TLCtrl1.DeleteAllItems()
+        self.fillList()
+        self.Refresh()
+        self.Layout()
         self.Frm.Destroy()
 
     def Spw1OnIdle( self, event ):
@@ -192,98 +243,172 @@ class MyPanel1 ( wx.Panel ):
 
 class MyPanel3 ( wx.Panel ):
 
-    def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,180 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+    def __init__( self, parent,Data,Buttom ,id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,180 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
         wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
 
-        bSizer8 = wx.BoxSizer( wx.VERTICAL )
+        self.Data = Data
+        self.GetMenu = MS.GetData(u'Menu2.db',u'')
+        self.SetMenu = MS.SetData(u'',u'',u'')
+        self.Action = False
+        self.box1val = 1
+        self.box2val = 'FFFF'
 
-        bSizer9 = wx.BoxSizer( wx.HORIZONTAL )
+        Vsz1 = wx.BoxSizer(wx.VERTICAL)
 
-        self.m_staticText11 = wx.StaticText( self, wx.ID_ANY, u"Bar name", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_staticText11.Wrap( -1 )
+        Hsz1 = wx.BoxSizer(wx.HORIZONTAL)
 
-        bSizer9.Add( self.m_staticText11, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        self.txt1 = wx.StaticText(self, wx.ID_ANY, u"Bar name", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.txt1.Wrap(-1)
 
-        self.m_textCtrl8 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer9.Add( self.m_textCtrl8, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        Hsz1.Add(self.txt1, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
+        self.fld1 = wx.TextCtrl(self, wx.ID_ANY, self.Data[0], wx.DefaultPosition, wx.DefaultSize, 0)
+        Hsz1.Add(self.fld1, 1, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer8.Add( bSizer9, 1, wx.EXPAND, 5 )
+        self.txt2 = wx.StaticText(self, wx.ID_ANY, u"ID", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.txt2.Wrap(-1)
 
-        bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
+        Hsz1.Add(self.txt2, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        self.m_staticText12 = wx.StaticText( self, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_staticText12.Wrap( -1 )
+        self.fld2 = wx.TextCtrl(self, wx.ID_ANY, self.Data[1], wx.DefaultPosition, wx.Size(50, -1), 0)
+        Hsz1.Add(self.fld2, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer10.Add( self.m_staticText12, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        self.txt3 = wx.StaticText(self, wx.ID_ANY, u"Access", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.txt3.Wrap(-1)
 
-        self.m_dirPicker2 = wx.DirPickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE|wx.DIRP_SMALL )
-        bSizer10.Add( self.m_dirPicker2, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        Hsz1.Add(self.txt3, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
+        self.fld3 = wx.TextCtrl(self, wx.ID_ANY, self.Data[2], wx.DefaultPosition, wx.Size(50, -1), 0)
+        Hsz1.Add(self.fld3, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer8.Add( bSizer10, 1, wx.EXPAND, 5 )
+        self.m_button24 = wx.Button(self, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT)
+        Hsz1.Add(self.m_button24, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
+        Vsz1.Add(Hsz1, 1, wx.EXPAND, 5)
 
-        self.m_checkBox3 = wx.CheckBox( self, wx.ID_ANY, u"Disable", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer11.Add( self.m_checkBox3, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        Hsz2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.m_checkBox4 = wx.CheckBox( self, wx.ID_ANY, u"Hiden", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer11.Add( self.m_checkBox4, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        self.txt4 = wx.StaticText(self, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.txt4.Wrap(-1)
 
+        Hsz2.Add(self.txt4, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer8.Add( bSizer11, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
+        self.dirct = wx.DirPickerCtrl(self, wx.ID_ANY, GUI_PATH+self.Data[3][4:], u"Select a folder", wx.DefaultPosition,
+                                      wx.DefaultSize, wx.DIRP_DEFAULT_STYLE | wx.DIRP_SMALL)
+        Hsz2.Add(self.dirct, 1, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        bSizer12 = wx.BoxSizer( wx.HORIZONTAL )
+        Vsz1.Add(Hsz2, 1, wx.EXPAND, 5)
 
+        Hsz3 = wx.BoxSizer(wx.HORIZONTAL)
 
-        bSizer12.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+        self.box1 = wx.CheckBox(self, wx.ID_ANY, u"Disable", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hsz3.Add(self.box1, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        self.m_button21 = wx.Button( self, wx.ID_ANY, u"Cancle", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer12.Add( self.m_button21, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        self.box2 = wx.CheckBox(self, wx.ID_ANY, u"Hiden", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hsz3.Add(self.box2, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        self.m_button19 = wx.Button( self, wx.ID_ANY, u"Change", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer12.Add( self.m_button19, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        if self.Data[4][0][2] == '0000':
+            self.box2.SetValue(True)
+        if self.Data[4][0][3] == 0:
+            self.box1.SetValue(True)
 
-        self.m_button20 = wx.Button( self, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer12.Add( self.m_button20, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+        Vsz1.Add(Hsz3, 0, wx.ALIGN_CENTER_HORIZONTAL, 5)
 
+        Hsz4 = wx.BoxSizer(wx.HORIZONTAL)
 
-        bSizer8.Add( bSizer12, 1, wx.EXPAND, 5 )
+        Hsz4.Add((0, 0), 1, wx.EXPAND, 5)
 
+        self.btn1 = wx.Button(self, wx.ID_ANY, u"Cancle", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hsz4.Add(self.btn1, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        self.SetSizer( bSizer8 )
+        self.btn2 = wx.Button(self, wx.ID_ANY, Buttom, wx.DefaultPosition, wx.DefaultSize, 0)
+        Hsz4.Add(self.btn2, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+        Vsz1.Add(Hsz4, 1, wx.EXPAND, 5)
+
+        self.SetSizer(Vsz1)
         self.Layout()
 
         # Connect Events
-        self.m_dirPicker2.Bind( wx.EVT_DIRPICKER_CHANGED, self.bardir )
-        self.m_checkBox3.Bind( wx.EVT_CHECKBOX, self.disbar )
-        self.m_checkBox4.Bind( wx.EVT_CHECKBOX, self.hidbar )
-        self.m_button21.Bind( wx.EVT_BUTTON, self.cancl )
-        self.m_button19.Bind( wx.EVT_BUTTON, self.chngbar )
-        self.m_button20.Bind( wx.EVT_BUTTON, self.addbar )
+        self.m_button24.Bind(wx.EVT_BUTTON, self.srchit)
+        self.dirct.Bind(wx.EVT_DIRPICKER_CHANGED, self.bardir)
+        self.box1.Bind(wx.EVT_CHECKBOX, self.disbar)
+        self.box2.Bind(wx.EVT_CHECKBOX, self.hidbar)
+        self.btn1.Bind(wx.EVT_BUTTON, self.cancl)
+        self.btn2.Bind(wx.EVT_BUTTON, self.doit)
 
-    def __del__( self ):
+    def __del__(self):
         pass
 
+        # Virtual event handlers, overide them in your derived class
 
-    # Virtual event handlers, overide them in your derived class
-    def bardir( self, event ):
+    def srchit(self, event):
         event.Skip()
 
-    def disbar( self, event ):
-        event.Skip()
+    def bardir(self, event):
+        mydir = event.GetEventObject().GetPath()
+        mydir.replace(GUI_PATH,u"GUI.")
+        #print(mydir)
 
-    def hidbar( self, event ):
-        event.Skip()
+        self.newdir = mydir.replace(GUI_PATH,u"GUI.")
+        #print(self.newdir)
 
-    def cancl( self, event ):
+    def disbar(self, event):
+        if event.GetEventObject().GetValue():
+            self.box1val = 0
+        else:
+            self.box1val = 1
+        #print(self.box1val)
+
+    def hidbar(self, event):
+        if event.GetEventObject().GetValue():
+            self.box2val = '0000'
+        else:
+            self.box2val = 'FFFF'
+        #print(self.box2val)
+
+    def cancl(self, event):
+        self.Action = False
         q = self.GetParent()
         q.Close()
-        #event.Skip()
 
-    def chngbar( self, event ):
-        event.Skip()
+    def doit(self, event):
+        if event.GetEventObject().GetLabel() == 'Create':
+            data1 = self.fld1.GetValue()
+            data2 = self.fld2.GetValue()
+            data3 = self.fld3.GetValue()
+            mydir = self.dirct.GetPath()
+            self.newdir = mydir.replace(GUI_PATH, u"GUI.")
+            self.SetMenu.field = u'menubar'
+            self.SetMenu.Additem(u'mbarid , mbarname , mbardir ,  acclvlid ', (data2,data1,self.newdir,data3))
+            data4 = self.box1val
+            data5 = self.box2val
+            self.SetMenu.field = u'access'
+            self.SetMenu.Additem(u'acclvlid , userid , acclvl , disenable ',(data3, 1, data5, data4))
 
-    def addbar( self, event ):
-        event.Skip()
+        elif event.GetEventObject().GetLabel() == 'Change':
+            data1 = self.fld1.GetValue()
+            mydir = self.dirct.GetPath()
+            self.newdir = mydir.replace(GUI_PATH,u"GUI.")
+            self.SetMenu.field = u'menubar'
+            self.SetMenu.Upditem(u'mbarname = ? , mbardir = ?  where mbarid = %s ' % self.Data[1],(data1,self.newdir))
+
+        elif event.GetEventObject().GetLabel() == 'Delete':
+            self.SetMenu.field = u'menubar'
+            self.SetMenu.Delitem(u" menubar.mbarid = %s" % self.Data[1] )
+            self.SetMenu.field = u'access'
+            self.SetMenu.Delitem(u" access.acclvlid = '%s' "% self.Data[2])
+            if len(self.GetMenu.gBarItm(self.Data[1])) != 0:
+                for itm in self.GetMenu.gBarItm(self.Data[1]):
+                    self.SetMenu.field = u'mitem'
+                    self.SetMenu.Delitem(u" mitem.itemid = %s " % itm[1] )
+                    self.SetMenu.field = u'extended'
+                    self.SetMenu.Delitem(u" extended.extid = '%s' " % itm[2])
+
+
+        else:
+            event.Skip()
+        self.Action = True
+        q = self.GetParent()
+        q.Close()
+

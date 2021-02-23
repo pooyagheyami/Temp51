@@ -92,28 +92,35 @@ class GetData:
             from menubar, toolbar  inner join mitem on mitem.handlerid = toolbar.handlerid
             where menubar.mbarid = mitem.mbarid
             and toolbar.toolid =  %s  """ % itolid)
+    def Acclvl(self,accid=''):
+        return sq.wxsqltxt(self.DBF, """ select * from access where access.acclvlid = '%s' """ % accid)
+    def gBarItm(self,mbar=''):
+        return  sq.wxsqltxt(self.DBF,""" select distinct mitem.mbarid , mitem.itemid , mitem.extid 
+                                     from mitem,extended 
+                                     where mitem.mbarid = %s""" % mbar)
 
 
 
 
 class SetData:
-    def __init__(self, send, data):
+    def __init__(self, field,send, data):
+        self.field = field
         self.send = send
         self.data = data
 
     def Additem(self, send, data):
-        return sq.wxsqins('Menu2.db', 'mitem', send, data)
+        return sq.wxsqins('Menu2.db', self.field, send, data)
 
     def Additem2(self, send, data):
-        return sq.wxsqins2('Menu2.db', 'mitem', send, data)
+        return sq.wxsqins2('Menu2.db', self.field, send, data)
 
     def Upditem(self, send, data):
-        return sq.wxsqlup('Menu2.db', 'mitem', send, data)
+        return sq.wxsqlup('Menu2.db', self.field, send, data)
 
     def Upditem2(self, send, data):
-        return sq.wxsqlup2('Menu2.db', 'mitem', send, data)
+        return sq.wxsqlup2('Menu2.db', self.field, send, data)
 
     def Delitem(self, data):
-        return sq.wxsqdel('Menu2.db', 'mitem', data)
+        return sq.wxsqdel('Menu2.db', self.field, data)
 
 
