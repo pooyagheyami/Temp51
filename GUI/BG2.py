@@ -7,6 +7,8 @@ import wx
 import wx.aui as wxaui
 from Config.Init import *
 
+import GUI.proman as pro
+
 
 
 class BGPanel(wx.Panel):
@@ -20,19 +22,7 @@ class BGPanel(wx.Panel):
 		self.SetBackgroundStyle(wx.BG_STYLE_ERASE)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
 
-		self.m1 = wx.Menu()
-
-		self.itm2 = wx.MenuItem( self.m1, wx.ID_ANY, u"Show O'Clock and Calendar", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.Append( self.itm2 )
-		self.itm2.Check( True )
-
-		self.itm3 = wx.MenuItem( self.m1, wx.ID_ANY, u"Pan of Input Information", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.Append( self.itm3 )
-		self.itm3.Check( True )
-
-		self.itm4 = wx.MenuItem( self.m1, wx.ID_ANY, u"Pan of Do it working", wx.EmptyString, wx.ITEM_CHECK )
-		self.m1.Append( self.itm4 )
-		self.itm4.Check( True )
+		#self.setmenu()
 
 
 		#bSizer2.Add( self.m_bitmap4, 5, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -43,7 +33,8 @@ class BGPanel(wx.Panel):
 
 		# Connect Events
 
-		self.Bind( wx.EVT_RIGHT_DOWN, self.m_bitmap4OnContextMenu )
+		#self.Bind( wx.EVT_RIGHT_DOWN, self.m_bitmap4OnContextMenu )
+		self.Bind( wx.EVT_CONTEXT_MENU, self.setmenu)
 		self.Bind(wxaui.EVT_AUI_RENDER, self.OnEraseBackground)
 
 	def __del__( self ):
@@ -52,13 +43,40 @@ class BGPanel(wx.Panel):
 	# Virtual event handlers, overide them in your derived class
 
 	def m_bitmap4OnContextMenu( self, event ):
-		#self.PopupMenu( self.m1, event.GetPosition() )
 		self.PopupMenu(self.m1)
+
 		#print (self.itm3.IsChecked(),self.itm2.IsChecked())
 		#print self.itm3.IsChecked(),self.itm4.IsChecked()
 
-	def showhide(self):
-		return [self.itm2.IsChecked(),self.itm3.IsChecked(),self.itm4.IsChecked()]
+	def setmenu(self,event):
+		self.MnuDic = { 1: [u'Menu Change',9999] ,2:[u'Toolbar Change',1002],3:[u'Panes Change',1002],4:[u'',0],
+					5:[u'Databases...',1002],6:[u'',0],7:[u'Settings...',1002] }
+		self.m1 = wx.Menu()
+
+		self.itms = []
+		i = 0
+		for itm in self.MnuDic :
+			self.Bind(wx.EVT_MENU, self.OnPopupOne, id=itm)
+			if self.MnuDic[itm][0] == u'':
+				self.m1.AppendSeparator()
+			else:
+				#self.itms.append( wx.MenuItem(self.m1, wx.ID_ANY, MnuDic[itm][0], wx.EmptyString) )
+				self.m1.Append(itm, self.MnuDic[itm][0])
+				#self.m1.Append(itm, self.itms[i])
+				#self.Bind(wx.EVT_MENU, self.OnPopupOne, id=MnuDic[itm][1])
+				i = i + 1
+
+		self.PopupMenu(self.m1)
+		self.m1.Destroy()
+
+	def OnPopupOne(self, event):
+		#print(event,event.GetId())
+		pmid = event.GetId()
+		a = pro.DoProgram(self.MnuDic[pmid][1],'A')
+		s = a.size() if 'size' in dir(a) else ()
+		win1 = wx.Frame(self, -1)
+		win1.SetSize(s)
+		a.main(win1)
 
 	def OnEraseBackground(self, evt):
 		# yanked from ColourDB.py

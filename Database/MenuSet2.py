@@ -103,24 +103,24 @@ class GetData:
 
 
 class SetData:
-    def __init__(self, field,send, data):
-        self.field = field
+    def __init__(self, Table,send, data):
+        self.Table = Table
         self.send = send
         self.data = data
 
     def Additem(self, send, data):
-        return sq.wxsqins('Menu2.db', self.field, send, data)
+        return sq.wxsqins('Menu2.db', self.Table, send, data)
 
     def Additem2(self, send, data):
-        return sq.wxsqins2('Menu2.db', self.field, send, data)
+        return sq.wxsqins2('Menu2.db', self.Table, send, data)
 
     def Upditem(self, send, data):
-        return sq.wxsqlup('Menu2.db', self.field, send, data)
+        return sq.wxsqlup('Menu2.db', self.Table, send, data)
 
     def Upditem2(self, send, data):
-        return sq.wxsqlup2('Menu2.db', self.field, send, data)
+        return sq.wxsqlup2('Menu2.db', self.Table, send, data)
 
     def Delitem(self, data):
-        return sq.wxsqdel('Menu2.db', self.field, data)
+        return sq.wxsqdel('Menu2.db', self.Table, data)
 
 

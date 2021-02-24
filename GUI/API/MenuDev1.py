@@ -179,9 +179,12 @@ class MyPanel1 ( wx.Panel ):
         event.Skip()
 
     def Nbar(self, event):
+        title = "Note:   Avoid duplicate code for create and choose the correct format [991] [99az] \
+                 A list of definition and access codes can be viewed at the last button in first row [...] \
+                 You can use the same directories for the several menu bar . "
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm,['','','','',[(u'',u'',u'',u'')]], 'Create')
-        self.Frm.SetSize((500, 180))
+        self.Pnl = MyPanel3(self.Frm,['','','','',[(u'',u'',u'',u'')]], 'Create',title)
+        self.Frm.SetSize((500, 235))
         self.Frm.SetTitle('New Menu Bar')
         self.Frm.ShowModal()
         self.TLCtrl1.DeleteAllItems()
@@ -191,6 +194,9 @@ class MyPanel1 ( wx.Panel ):
         self.Frm.Destroy()
 
     def Cbar(self, event):
+        title = "Note:   Avoid duplicate code for changes and choose the correct format [991] [99az] \
+                 A list of definition and access codes can be viewed at the last button in first row [...]\
+                 You can use the same directories for the several menu bar . "
         ps = self.TLCtrl1.GetSelections()
         self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
         self.itmnam = self.TLCtrl1.GetItemText(ps[0], 1)
@@ -199,8 +205,8 @@ class MyPanel1 ( wx.Panel ):
         self.accrcd = self.MyMenu.Acclvl(self.itmacc)
         dd = [self.itmnam,self.itmcod,self.itmacc,self.itmdir,self.accrcd]
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm,dd,'Change')
-        self.Frm.SetSize((500, 180))
+        self.Pnl = MyPanel3(self.Frm,dd,'Change',title)
+        self.Frm.SetSize((500, 235))
         self.Frm.SetTitle('Change Menu Bar')
         self.Frm.ShowModal()
         self.TLCtrl1.DeleteAllItems()
@@ -210,7 +216,9 @@ class MyPanel1 ( wx.Panel ):
         self.Frm.Destroy()
 
     def Dbar(self, event):
-
+        title = " Note : that by deleting the menu bar, all the items below it will also be removed \
+                  Only the programs attached to the items will not be removed and the code will remain \
+                  You can assign them to other items or create a new item . "
         ps = self.TLCtrl1.GetSelections()
         self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
         self.itmnam = self.TLCtrl1.GetItemText(ps[0], 1)
@@ -219,8 +227,8 @@ class MyPanel1 ( wx.Panel ):
         self.accrcd = self.MyMenu.Acclvl(self.itmacc)
         dd = [self.itmnam, self.itmcod, self.itmacc, self.itmdir,self.accrcd]
         self.Frm = wx.Dialog(self)
-        self.Pnl = MyPanel3(self.Frm,dd,'Delete')
-        self.Frm.SetSize((500, 180))
+        self.Pnl = MyPanel3(self.Frm,dd,'Delete',title)
+        self.Frm.SetSize((500, 235))
         self.Frm.SetTitle('Delete Menu Bar')
         self.Frm.ShowModal()
         if self.Pnl.Action:
@@ -243,7 +251,7 @@ class MyPanel1 ( wx.Panel ):
 
 class MyPanel3 ( wx.Panel ):
 
-    def __init__( self, parent,Data,Buttom ,id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,180 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+    def __init__( self, parent,Data,Buttom ,title,id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,235 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
         wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
 
         self.Data = Data
@@ -254,6 +262,14 @@ class MyPanel3 ( wx.Panel ):
         self.box2val = 'FFFF'
 
         Vsz1 = wx.BoxSizer(wx.VERTICAL)
+
+        Vst = wx.BoxSizer(wx.VERTICAL)
+
+        self.title = wx.StaticText(self, wx.ID_ANY, title, wx.DefaultPosition, wx.DefaultSize,0)
+        self.title.Wrap(1)
+        Vst.Add(self.title, 1, wx.ALL | wx.EXPAND, 5)
+
+        Vsz1.Add(Vst, 1, wx.EXPAND, 5)
 
         Hsz1 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -284,7 +300,7 @@ class MyPanel3 ( wx.Panel ):
         self.m_button24 = wx.Button(self, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT)
         Hsz1.Add(self.m_button24, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        Vsz1.Add(Hsz1, 1, wx.EXPAND, 5)
+        Vsz1.Add(Hsz1, 0, wx.EXPAND, 5)
 
         Hsz2 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -297,7 +313,7 @@ class MyPanel3 ( wx.Panel ):
                                       wx.DefaultSize, wx.DIRP_DEFAULT_STYLE | wx.DIRP_SMALL)
         Hsz2.Add(self.dirct, 1, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        Vsz1.Add(Hsz2, 1, wx.EXPAND, 5)
+        Vsz1.Add(Hsz2, 0, wx.EXPAND, 5)
 
         Hsz3 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -324,7 +340,7 @@ class MyPanel3 ( wx.Panel ):
         self.btn2 = wx.Button(self, wx.ID_ANY, Buttom, wx.DefaultPosition, wx.DefaultSize, 0)
         Hsz4.Add(self.btn2, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        Vsz1.Add(Hsz4, 1, wx.EXPAND, 5)
+        Vsz1.Add(Hsz4, 0, wx.EXPAND, 5)
 
         self.SetSizer(Vsz1)
         self.Layout()
@@ -379,30 +395,30 @@ class MyPanel3 ( wx.Panel ):
             data3 = self.fld3.GetValue()
             mydir = self.dirct.GetPath()
             self.newdir = mydir.replace(GUI_PATH, u"GUI.")
-            self.SetMenu.field = u'menubar'
+            self.SetMenu.Table = u'menubar'
             self.SetMenu.Additem(u'mbarid , mbarname , mbardir ,  acclvlid ', (data2,data1,self.newdir,data3))
             data4 = self.box1val
             data5 = self.box2val
-            self.SetMenu.field = u'access'
+            self.SetMenu.Table = u'access'
             self.SetMenu.Additem(u'acclvlid , userid , acclvl , disenable ',(data3, 1, data5, data4))
 
         elif event.GetEventObject().GetLabel() == 'Change':
             data1 = self.fld1.GetValue()
             mydir = self.dirct.GetPath()
             self.newdir = mydir.replace(GUI_PATH,u"GUI.")
-            self.SetMenu.field = u'menubar'
+            self.SetMenu.Table = u'menubar'
             self.SetMenu.Upditem(u'mbarname = ? , mbardir = ?  where mbarid = %s ' % self.Data[1],(data1,self.newdir))
 
         elif event.GetEventObject().GetLabel() == 'Delete':
-            self.SetMenu.field = u'menubar'
+            self.SetMenu.Table = u'menubar'
             self.SetMenu.Delitem(u" menubar.mbarid = %s" % self.Data[1] )
-            self.SetMenu.field = u'access'
+            self.SetMenu.Table = u'access'
             self.SetMenu.Delitem(u" access.acclvlid = '%s' "% self.Data[2])
             if len(self.GetMenu.gBarItm(self.Data[1])) != 0:
                 for itm in self.GetMenu.gBarItm(self.Data[1]):
-                    self.SetMenu.field = u'mitem'
+                    self.SetMenu.Table = u'mitem'
                     self.SetMenu.Delitem(u" mitem.itemid = %s " % itm[1] )
-                    self.SetMenu.field = u'extended'
+                    self.SetMenu.Table = u'extended'
                     self.SetMenu.Delitem(u" extended.extid = '%s' " % itm[2])
 
 

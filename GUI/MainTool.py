@@ -58,8 +58,8 @@ class ToolData(object):
 
 
 class MyToolbar(wx.ToolBar):
-    data = []
-    def __init__(self,parent,style=wx.TB_FLAT | wx.TB_NODIVIDER ):
+    data = []          #wx.TB_NODIVIDER |
+    def __init__(self,parent,style=wx.TB_FLAT |  wx.TB_HORIZONTAL | wx.NO_BORDER):
         wx.ToolBar.__init__(self,parent,style=style)
         self.mytb = []
         self.mytp = {}

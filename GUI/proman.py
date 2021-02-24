@@ -60,6 +60,10 @@ def DoProgram(item,MT):
         p = M.toogram(item)
         d = M.tooldir(item)
 
+    elif MT == 'A':
+        p = M.program(item)
+        d = 'GUI.Develop'
+
     I = M.Dohndlr()
     #print I
     Ii = []

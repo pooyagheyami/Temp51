@@ -99,7 +99,7 @@ class MainWin(wx.Frame):
         
         self.BGrnd(bps,BGF)
 
-        self.Bind(wx.EVT_RIGHT_DOWN, self.printit)
+        #self.Bind(wx.EVT_RIGHT_DOWN, self.printit)
 
         
         self.m_mgr.Update()
@@ -230,33 +230,3 @@ class MainWin(wx.Frame):
             self.m_mgr.GetPane(self.bmpwin).Show()
         elif BPS == 0:
             self.m_mgr.GetPane(self.bmpwin).Hide()
-        #self.m_mgr.GetPane(self.htmlwin).Show()
-        #self.m_mgr.Bind(wx.EVT_CONTEXT_MENU,self.printit)
-        #self.bmpwin.Bind(wx.EVT_CONTEXT_MENU,self.printit)
-        #self.m_mgr.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
-        #self.bmpwin.Bind(wx.EVT_MOUSE_EVENTS,self.printit)
-
-    def mouseclick(self,event):
-        print(event)
-
-    def printit(self,event):
-        #print self.bmpwin.showhide()
-                    
-        if self.bmpwin.showhide()[0]:
-            tps = 1
-            try :
-                self.owin.Show()
-                tps = 1
-            except:
-                self.Clock(tps)
-                
-
-        elif not self.bmpwin.showhide()[0]:
-            tps = 0
-            try :
-                self.owin.Hide()
-                tps = 0
-            except:
-                self.Clock(tps)
-            
-        self.m_mgr.Update()
