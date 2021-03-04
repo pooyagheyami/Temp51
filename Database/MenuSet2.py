@@ -22,6 +22,8 @@ class GetData:
                                         from mitem
                                         where mitem.mbarid = %d
                                         """ % mbar)
+    def gBarN(self, mbar=1):
+        return sq.wxsqsnd(self.DBF,u'menubar',u'mbarname',u'mbarid',mbar)
 
     def AmenuBar(self, Access=u'FFFF'):
         return sq.wxsqltxt(self.DBF, """ SELECT *
@@ -36,6 +38,14 @@ class GetData:
                      left join extended on mitem.extid = extended.extid
                      WHERE mitem.mbarid = %d
                        """ % barid)  #ORDER BY mitem.itemid
+
+    def getmItem(self, itmid=0):
+        return sq.wxsqltxt(self.DBF, """ SELECT DISTINCT *
+                     FROM mitem
+                     left join extended on mitem.extid = extended.extid
+                     left join access on extended.acclvlid = access.acclvlid
+                     left join handler on mitem.handlerid = handler.handlerid
+                     WHERE mitem.itemid = %d """ % itmid)
 
     def DirBar(self):
         return sq.wxsqltxt(self.DBF, """SELECT menubar.mbardir

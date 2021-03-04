@@ -12,14 +12,21 @@ import wx.xrc
 
 from Config.Init import *
 
+import Database.MenuSet2 as MS
+
 ###########################################################################
 ## Class MyPanel1
 ###########################################################################
 
 class MyPanel1 ( wx.Panel ):
 
-	def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 700,360 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+	def __init__( self, parent, Data=[],Button=u'',id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 700,360 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
 		wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
+
+		self.Data = Data
+		self.Button = Button
+		self.getMData = MS.GetData(u'Menu2.db',u'')
+		self.setMDate = MS.SetData(u'',u'',u'')
 
 		Vz1 = wx.BoxSizer( wx.VERTICAL )
 
@@ -31,13 +38,37 @@ class MyPanel1 ( wx.Panel ):
 
 		Hzp1 = wx.WrapSizer( wx.HORIZONTAL, 0 )
 
-		self.txt1 = wx.StaticText( self.P1, wx.ID_ANY, u"ID", wx.DefaultPosition, wx.Size( 70,-1 ), 0 )
-		self.txt1.Wrap( -1 )
+		if Data != []:
+			barname = self.getMData.gBarN(Data[0])[0][0]
+			self.C = barname[0]
+		else:
+			barname = u''
+			self.C = 'P'
 
-		Hzp1.Add( self.txt1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.fld1 = wx.TextCtrl( self.P1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		Hzp1.Add( self.fld1, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		self.title = wx.StaticText(self.P1, wx.ID_ANY, u"Menu Bar: "+barname, wx.DefaultPosition, wx.DefaultSize, 0)
+		self.title.Wrap(-1)
+
+		Hzp1.Add(self.title, 1, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+		self.txt1a = wx.StaticText(self.P1, wx.ID_ANY, u"ID", wx.DefaultPosition, wx.Size(-1, -1), 0)
+		self.txt1a.Wrap(-1)
+
+		Hzp1.Add(self.txt1a, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+		self.fld0 = wx.TextCtrl(self.P1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(50, -1), 0)
+		Hzp1.Add(self.fld0, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL , 5)
+
+		self.txt1b = wx.StaticText(self.P1, wx.ID_ANY, u"Access", wx.DefaultPosition, wx.DefaultSize, 0)
+		self.txt1b.Wrap(-1)
+
+		Hzp1.Add(self.txt1b, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+		self.fld1 = wx.TextCtrl(self.P1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(40, -1), 0)
+		Hzp1.Add(self.fld1, 0, wx.ALL, 5)
+
+		self.btnsrc = wx.Button(self.P1, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT)
+		Hzp1.Add(self.btnsrc, 0, wx.ALL, 5)
 
 
 		Vzp1.Add( Hzp1, 0, wx.EXPAND, 5 )
@@ -62,11 +93,15 @@ class MyPanel1 ( wx.Panel ):
 
 		Hzp3.Add( self.txt3, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.fld3 = wx.TextCtrl( self.P1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		Hzp3.Add( self.fld3, 1, wx.ALL, 5 )
+		self.fld3 = wx.FilePickerCtrl(self.P1, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.png;*.bmp;*.jpg",
+									  wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE | wx.FLP_SMALL)
+		Hzp3.Add(self.fld3, 1, wx.ALL, 5)
 
-		self.btnIcn = wx.Button( self.P1, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		Hzp3.Add( self.btnIcn, 0, wx.ALL, 5 )
+		#self.fld3 = wx.TextCtrl( self.P1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		#Hzp3.Add( self.fld3, 1, wx.ALL, 5 )
+
+		#self.btnIcn = wx.Button( self.P1, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
+		#Hzp3.Add( self.btnIcn, 0, wx.ALL, 5 )
 
 
 		Vzp1.Add( Hzp3, 0, wx.EXPAND, 5 )
@@ -277,12 +312,17 @@ class MyPanel1 ( wx.Panel ):
 
 		Vz1.Add( Hz1, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
+		if self.Button == 'UpDate' :
+			self.putData(self.Data)
 
 		self.SetSizer( Vz1 )
 		self.Layout()
 
 		# Connect Events
-		self.btnIcn.Bind( wx.EVT_BUTTON, self.opnicn )
+		#self.btnIcn.Bind( wx.EVT_BUTTON, self.opnicn )
+		self.btnsrc.Bind(wx.EVT_BUTTON, self.lstid)
+		self.fld3.Bind(wx.EVT_FILEPICKER_CHANGED, self.shwicn)
+
 		self.rBtn1.Bind( wx.EVT_RADIOBUTTON, self.typitm )
 		self.rBtn2.Bind( wx.EVT_RADIOBUTTON, self.typitm )
 		self.rBtn3.Bind( wx.EVT_RADIOBUTTON, self.typitm )
@@ -310,7 +350,47 @@ class MyPanel1 ( wx.Panel ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def opnicn( self, event ):
+	#def opnicn( self, event ):
+	def putData(self, Data):
+		print(Data)
+		self.fld0.SetValue(str(Data[0]))
+		if self.Data[11] != None:
+			self.fld1.SetValue(Data[11])
+		if Data[2] == None:
+			self.fld2.SetValue(u'Separator')
+		else:
+			self.fld2.SetValue(Data[2])
+		if Data[8] != None :
+			self.fld3.SetPath(ICON16_PATH+Data[8])
+		if Data[9] != None :
+			self.fld4.SetValue(Data[9])
+		if Data[10] != None:
+			self.fld5.SetValue(Data[10])
+		if Data[7] != None:
+			self.fld6.SetValue(Data[7])
+		if Data[3] == 'N':
+			self.rBtn1.SetValue(True)
+		elif Data[3] == 'C':
+			self.rBtn2.SetValue(True)
+		elif Data[3] == 'R':
+			self.rBtn3.SetValue(True)
+		elif Data[3] == 'S':
+			self.rBtn4.SetValue(True)
+		else:
+			pass
+		if Data[16] != None or Data[16] == 1:
+			self.cBox1.SetValue(True)
+		if Data[15] != None or Data[15] == '0000':
+			self.cBox2.SetValue(True)
+
+		self.Update()
+		#self.Layout()
+
+	def lstid(self, event):
+		event.Skip()
+
+	def shwicn(self, event):
+		self.icon.SetBitmap(wx.Bitmap(self.fld3.GetPath(),wx.BITMAP_TYPE_ANY))
 		event.Skip()
 
 	def typitm( self, event ):
@@ -362,6 +442,29 @@ class MyPanel1 ( wx.Panel ):
 		event.Skip()
 
 	def Aply( self, event ):
+		D = self.getfild()
+		extid =  D[0][0]+D[0][-1]+D[7]+self.C+D[0][1:]
+		hndid = 10001
+		Dsri1 = [self.Data[0],int(D[0]),D[2],D[7],extid, hndid]
+		Dsri2 = [extid, D[5], D[3].replace(ICON16_PATH,''), D[4], D[6], D[1], 1]
+		if D[8]:
+			dn = 0
+		else:
+			dn = 1
+		if D[9]:
+			sh = '0000'
+		else:
+			sh = 'FFFF'
+		Dsri3 = [D[1], 1, sh, dn]
+		#print(D)
+		#print(Dsri1)
+		self.setMDate.Table = u'mitem'
+		self.setMDate.Additem(u'mbarid, itemid, itemname, itemtyp, extid, handlerid ',Dsri1)
+		self.setMDate.Table = u'extended'
+		self.setMDate.Additem(u'extid, status, icon, shortcut, help, acclvlid, grpid',Dsri2)
+		self.setMDate.Table = u'access'
+		self.setMDate.Additem(u'acclvlid, userid, acclvl, disenable', Dsri3)
+		wx.MessageBox(u'item Add to menu item you can change or add program later. ')
 		event.Skip()
 
 	def Save( self, event ):
@@ -373,5 +476,28 @@ class MyPanel1 ( wx.Panel ):
 	def SP1OnIdle( self, event ):
 		self.SP1.SetSashPosition( 349 )
 		self.SP1.Unbind( wx.EVT_IDLE )
+
+	def getfild(self):
+		Data0 = self.fld0.GetValue()
+		Data1 = self.fld1.GetValue()
+		Data2 = self.fld2.GetValue()
+		Data3 = self.fld3.GetPath()
+		Data4 = self.fld4.GetValue()
+		Data5 = self.fld5.GetValue()
+		Data6 = self.fld6.GetValue()
+		if self.rBtn1.GetValue():
+			Data7 = 'N'
+		elif self.rBtn2.GetValue():
+			Data7 = 'C'
+		elif self.rBtn3.GetValue():
+			Data7 = 'R'
+		elif self.rBtn4.GetValue():
+			Data7 = 'S'
+		else:
+			Data7 = ''
+		Data8 = self.cBox1.GetValue()
+		Data9 = self.cBox2.GetValue()
+		return [Data0,Data1,Data2,Data3,Data4,Data5,Data6,Data7,Data8,Data9]
+
 
 

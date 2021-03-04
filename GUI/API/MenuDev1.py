@@ -120,7 +120,6 @@ class MyPanel1 ( wx.Panel ):
     def DoshowItm( self, event ):
         print(event.GetEventObject())
         print(dir(event.GetEventObject()))
-        print(event.GetEventObject().GetItemData())
         event.Skip()
 
     def Thismenu( self, event ):
@@ -162,17 +161,38 @@ class MyPanel1 ( wx.Panel ):
                 # self.TLCtrl1.SetItemText(chditm, 3, str(i[4]))
 
     def Additm( self, event ):
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+        print(self.itmcod)
+        itdd = self.MyMenu.getmItem(int(self.itmcod))
+        if itdd == []:
+            itdd = [self.itmcod,[]]
+        else:
+            itdd = itdd[0]
         self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
-        self.Pnl = MF.MyPanel1(self.Frm)
+        self.Pnl = MF.MyPanel1(self.Frm,[itdd[0],itdd[1]],u'AddNew')
         self.Frm.SetSize((700,360))
         self.Frm.Show()
         #event.Skip()
 
 
     def edititm( self, event ):
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+
+        itdd = self.MyMenu.getmItem(int(self.itmcod))[0]
+        print(itdd)
+        self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
+        self.Pnl = MF.MyPanel1(self.Frm,itdd,'UpDate')
+        self.Frm.SetSize((700, 360))
+        self.Frm.Show()
         event.Skip()
 
     def delitm( self, event ):
+        self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
+        self.Pnl = MF.MyPanel1(self.Frm)
+        self.Frm.SetSize((700, 360))
+        self.Frm.Show()
         event.Skip()
 
     def aplyit( self, event ):
@@ -260,6 +280,7 @@ class MyPanel3 ( wx.Panel ):
         self.Action = False
         self.box1val = 1
         self.box2val = 'FFFF'
+        self.oldbar = self.Data[0]
 
         Vsz1 = wx.BoxSizer(wx.VERTICAL)
 
@@ -389,6 +410,8 @@ class MyPanel3 ( wx.Panel ):
         q.Close()
 
     def doit(self, event):
+        mw = self.FindWindowByName('main')
+        mb = mw.GetMenuBar()
         if event.GetEventObject().GetLabel() == 'Create':
             data1 = self.fld1.GetValue()
             data2 = self.fld2.GetValue()
@@ -402,12 +425,16 @@ class MyPanel3 ( wx.Panel ):
             self.SetMenu.Table = u'access'
             self.SetMenu.Additem(u'acclvlid , userid , acclvl , disenable ',(data3, 1, data5, data4))
 
+            mb.Append(wx.Menu(),data1)
+
+
         elif event.GetEventObject().GetLabel() == 'Change':
             data1 = self.fld1.GetValue()
             mydir = self.dirct.GetPath()
             self.newdir = mydir.replace(GUI_PATH,u"GUI.")
             self.SetMenu.Table = u'menubar'
             self.SetMenu.Upditem(u'mbarname = ? , mbardir = ?  where mbarid = %s ' % self.Data[1],(data1,self.newdir))
+            mb.SetMenuLabel(mb.FindMenu(self.oldbar),data1)
 
         elif event.GetEventObject().GetLabel() == 'Delete':
             self.SetMenu.Table = u'menubar'
@@ -421,9 +448,11 @@ class MyPanel3 ( wx.Panel ):
                     self.SetMenu.Table = u'extended'
                     self.SetMenu.Delitem(u" extended.extid = '%s' " % itm[2])
 
+            mb.Remove(mb.FindMenu(self.Data[0]))
 
         else:
             event.Skip()
+
         self.Action = True
         q = self.GetParent()
         q.Close()

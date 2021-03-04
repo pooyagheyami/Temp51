@@ -10,7 +10,7 @@ import wx.aui
 import os
 from  Config.Init import *
 
-
+'''
 class MainToolAui():
     def __init__(self,parent):
         #self.myTool = wx.aui.AuiToolBar( parent, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.aui.AUI_TB_HORZ_LAYOUT )
@@ -34,7 +34,7 @@ class MainToolAui():
 
     def GetToolid(self):
         return 101
-
+'''
 
 class ToolData(object):
     def __init__(self):
@@ -58,8 +58,8 @@ class ToolData(object):
 
 
 class MyToolbar(wx.ToolBar):
-    data = []          #wx.TB_NODIVIDER |
-    def __init__(self,parent,style=wx.TB_FLAT |  wx.TB_HORIZONTAL | wx.NO_BORDER):
+    data = []          #wx.TB_NODIVIDER | wx.NO_BORDER | wx.TB_FLAT |
+    def __init__(self,parent,style=  wx.TB_HORIZONTAL | wx.TB_DEFAULT_STYLE):
         wx.ToolBar.__init__(self,parent,style=style)
         self.mytb = []
         self.mytp = {}

@@ -8,13 +8,11 @@ import wx
 import wx.aui
 import wx.html
 
-
 import GUI.MainMenu2 as MM
 import GUI.MainTool as MT
 
-
-#import GUI.AuiPanel.Stat as SP
 import GUI.AuiPanel.PAui as PA
+
 import importlib
 
 import GUI.BG2 as BG
@@ -34,27 +32,12 @@ class MainWin(wx.Frame):
 
         #Check config for first start prgram ===============
         
-        #C = bs.BaseCheck()
-        #print C
-        #C = 0
-        #D = bs.Getprogini()
-        #print D
-        
-        #BGF = D[4] 
-        
-        
-
         #Check config for show or hide aui panels=========
-        #rps = int(D[0])
-        #sps = int(D[1])
-        #bps = int(D[2])
-        #tps = int(D[3])
 
-        sps = 1
+        STBT = 'N'
         bps = 1
         tps = 1
         BGF = "V10.jpg"
-
 
         #Menu of Program============== 
         menu = MM.MainMenu()
@@ -70,8 +53,7 @@ class MainWin(wx.Frame):
         #imenu.EnableTop(3, False)
 
         #Show aui panels==============
-
-
+        #self.Toolbar()
 
 
         #Aui Panels of Program==================
@@ -81,14 +63,10 @@ class MainWin(wx.Frame):
         self.m_mgr.SetFlags(wx.aui.AUI_MGR_DEFAULT)
 
         # Create Tool Bars=======================
-        #tool = MT.MainTool(self, -1, wx.DefaultPosition, wx.DefaultSize,
-         #                     wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_TEXT)
-        #tool = MT.MainToolAui(self)
-
-        #self.m_mgr.AddPane(tool[0],wx.aui.AuiPaneInfo().Name(tool).Caption("Tool bar").
-        #                   ToolbarPane().Top().Row(1).LeftDockable(False).RightDockable(False))
-        #self.m_mgr.AddPane(tool.myTool,wx.aui.AuiPaneInfo().Top().PinButton(True).Dock().Resizable().FloatingSize(wx.Size(122, 260)).Layer(1))
-        self.ToolPnl()
+        if STBT == 'N':
+            self.Toolbar()
+        else:
+            self.ToolPnl()
 
         #Panel report=======================
         #self.Stpnl(sps)
@@ -96,18 +74,12 @@ class MainWin(wx.Frame):
         self.APnls()
 
         #set background in frame ==================
-        
         self.BGrnd(bps,BGF)
 
-        #self.Bind(wx.EVT_RIGHT_DOWN, self.printit)
 
-        
         self.m_mgr.Update()
         self.Centre( wx.BOTH )
 
-        #if user.Checkpass() != 'OK':
-        #    print 'quit'
-        #self.Bind(wx.EVT_RIGHT_DOWN,self.mouseclick)
         #Show other win in main windows==============
         '''
         if C == 1:
@@ -146,13 +118,27 @@ class MainWin(wx.Frame):
         win1.SetSize(s)
         a.main(win1)
 
-    def OnShow(self,event):
-        #print event
-        self.Stap.refresh()
-        self.Stap.showitem() 
-        #self.Stap.Layout()
-        #self.m_mgr.Update()
-	    #self.Centre( wx.BOTH )
+    def Toolbar(self):
+        self.tb = self.CreateToolBar(wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT)
+        Tbd = MT.ToolData()
+        Tbl = Tbd.ToolBarList()
+        #print(Tbl)
+        tsize = (24, 24)
+        self.tb.SetToolBitmapSize(tsize)
+        for tl in Tbl:
+            for t in Tbl[tl]:
+                if t[1] == '' or t[1] == None:
+                    self.tb.AddSeparator()
+                else:
+                    #print(t)
+
+                    self.tb.AddTool(t[0], t[1], wx.Bitmap(ICON32_PATH+t[2],wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, t[1], t[3], None)
+                    self.Bind(wx.EVT_TOOL, self.OnTool, id=t[0])
+            self.tb.AddSeparator()
+
+
+        self.tb.Realize()
+
 
     def ToolPnl(self):
         self.tool = []
@@ -193,21 +179,6 @@ class MainWin(wx.Frame):
                         #print(FL[P][7])
                         PInfo.Layer(int(FL[P][7].strip()))
                     self.m_mgr.AddPane(mp,PInfo)
-    '''
-    def Stpnl(self,SPS):
-        lbel = [u'Description',u'Data',u'Input',u'Account',u'Code',u'Date']
-        
-        self.Stap = SP.MyPanel( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,100 ), wx.TAB_TRAVERSAL, lbel )
-        self.m_mgr.AddPane( self.Stap, wx.aui.AuiPaneInfo() .Bottom() .PinButton( True ).Dock().Resizable().FloatingSize( wx.Size( 400,200 ) ).Layer( 2 ) )
-        
-        self.m_mgr.Bind(wx.EVT_TEXT,self.OnShow)
-        #self.m_mgr.Bind(wx.EVT_WINDOW_DESTROY,self.OnShow) 
-        
-        if SPS == 1 :
-            self.m_mgr.GetPane(self.Stap).Show()
-        elif SPS == 0:
-            self.m_mgr.GetPane(self.Stap).Hide()
-    '''
 
     def Clock(self,TPS):
         #self.owin = wx.Frame(self,-1,style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)
