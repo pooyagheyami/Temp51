@@ -55,7 +55,7 @@ class MainMenu():
                     self.menuItem = self.menu.Append(eachId, itmlebl, eachStatus)
                 else:
                     print('mtype has a error')
-                if echicon != None:
+                if echicon != None and echicon != '':
                     self.menuItem.SetBitmap(wx.Bitmap(ICON16_PATH + echicon, wx.BITMAP_TYPE_ANY))
 
             else:

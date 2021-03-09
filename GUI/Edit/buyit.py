@@ -30,7 +30,7 @@ def main(panel=None ):
     
     frame = telframe(parent )
     frame.SetTitle(u'Note')
-    frame.SetSize((300,160))
+    frame.SetSize((400,250))
     frame.Show()
     
 

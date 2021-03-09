@@ -11,9 +11,10 @@ class GetData:
         self.sends = sends
 
     def ShowItem(self, ibar=1):
-        return sq.wxsqltxt(self.DBF, """select mitem.extid, mitem.itemid,mitem.mbarid,mitem.itemname,handler.prgname
+        return sq.wxsqltxt(self.DBF, """select mitem.extid, mitem.itemid,mitem.mbarid,mitem.itemname,handler.prgname,extended.acclvlid
                                         from mitem
                                         left join handler on handler.handlerid = mitem.handlerid
+                                        left join extended on extended.extid = mitem.extid
                                         where mitem.mbarid = %d
                                         """ % ibar)
 

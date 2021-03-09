@@ -65,7 +65,7 @@ class MyPanel1 ( wx.Panel ):
 
         Vsz3.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-        self.btn4 = wx.Button( self.pnl2, wx.ID_ANY, u"Apply", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn4 = wx.Button( self.pnl2, wx.ID_ANY, u"Separator", wx.DefaultPosition, wx.DefaultSize, 0 )
         Vsz3.Add( self.btn4, 0, wx.ALL, 5 )
 
 
@@ -131,7 +131,8 @@ class MyPanel1 ( wx.Panel ):
         if int(self.itmcod) < 1000 and int(self.itmcod)%10 == 1:
             self.Cbar(None)
         elif int(self.itmcod) > 1000:
-            print(self.itmnam)
+            #print(self.itmnam)
+            self.edititm(None)
         else:
             print(self.itmnam,self.itmcod)
         event.Skip()
@@ -158,17 +159,18 @@ class MyPanel1 ( wx.Panel ):
                 else:
                     self.TLCtrl1.SetItemText(chditm, 1, str(i[3]))
                     self.TLCtrl1.SetItemText(chditm, 2, str(i[4]))
-                # self.TLCtrl1.SetItemText(chditm, 3, str(i[4]))
+                self.TLCtrl1.SetItemText(chditm, 3, str(i[5]))
 
     def Additm( self, event ):
         ps = self.TLCtrl1.GetSelections()
         self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
-        print(self.itmcod)
+
         itdd = self.MyMenu.getmItem(int(self.itmcod))
         if itdd == []:
             itdd = [self.itmcod,[]]
         else:
             itdd = itdd[0]
+        #print(self.itmcod,itdd[0])
         self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
         self.Pnl = MF.MyPanel1(self.Frm,[itdd[0],itdd[1]],u'AddNew')
         self.Frm.SetSize((700,360))
@@ -181,22 +183,45 @@ class MyPanel1 ( wx.Panel ):
         self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
 
         itdd = self.MyMenu.getmItem(int(self.itmcod))[0]
-        print(itdd)
+        #print(itdd)
         self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
         self.Pnl = MF.MyPanel1(self.Frm,itdd,'UpDate')
         self.Frm.SetSize((700, 360))
         self.Frm.Show()
-        event.Skip()
+        #event.Skip()
 
     def delitm( self, event ):
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+
+        itdd = self.MyMenu.getmItem(int(self.itmcod))[0]
         self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
-        self.Pnl = MF.MyPanel1(self.Frm)
+        self.Pnl = MF.MyPanel1(self.Frm,itdd, 'Delete')
         self.Frm.SetSize((700, 360))
         self.Frm.Show()
-        event.Skip()
+        #event.Skip()
 
     def aplyit( self, event ):
-        event.Skip()
+        ps = self.TLCtrl1.GetSelections()
+        self.itmcod = self.TLCtrl1.GetItemText(ps[0], 0)
+
+        itdd = self.MyMenu.getmItem(int(self.itmcod))[0]
+        litm = self.MyMenu.gItem(itdd[0])
+        #print(itdd)
+        #print(int(litm[-1][1])+1)
+        self.DoMenu.Table = 'mitem'
+        self.DoMenu.Additem(u'mbarid, itemid',[itdd[0],int(litm[-1][1])+1])
+        mw = self.FindWindowByName('main')
+        mb = mw.GetMenuBar()
+        #lmb = mb.GetMenus()
+        mbr = mb.FindItem(itdd[1])
+        #indx = mbr[1].FindChildItem(itdd[1])[1]
+        mbr[1].AppendSeparator()
+        self.TLCtrl1.DeleteAllItems()
+        self.fillList()
+        self.Refresh()
+        self.Layout()
+
 
     def Nbar(self, event):
         title = "Note:   Avoid duplicate code for create and choose the correct format [991] [99az] \
