@@ -16,7 +16,7 @@ import wx
 
 class MyPanel1 ( wx.Panel ):
 	
-	def __init__( self, parent , txt , btn ):
+	def __init__( self, parent , txt='' , btn='Ok' ):
 		wx.Panel.__init__ ( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 300,100 ), style = wx.TAB_TRAVERSAL )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )

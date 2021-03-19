@@ -10,9 +10,14 @@
 import wx
 import wx.xrc
 
+from AI.OpnFil import *
+from AI.Analiz import *
+
 from Config.Init import *
 
 import Database.MenuSet2 as MS
+import GUI.proman as pro
+import importlib
 
 
 ###########################################################################
@@ -26,6 +31,7 @@ class MyPanel1(wx.Panel):
         wx.Panel.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
 
         self.Data = Data
+        print(Data)
         self.Button = Button
         self.getMData = MS.GetData(u'Menu2.db', u'')
         self.setMDate = MS.SetData(u'', u'', u'')
@@ -204,6 +210,12 @@ class MyPanel1(wx.Panel):
         self.Doprgitm = wx.TextCtrl(self.P2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         Hzp9.Add(self.Doprgitm, 1, wx.ALL, 5)
 
+        self.pykan = wx.StaticText(self.P2,wx.ID_ANY,u"=>",wx.DefaultPosition,wx.DefaultSize,0)
+        Hzp9.Add(self.pykan, 0, wx.ALL,5)
+
+        self.Dsfilitm = wx.TextCtrl(self.P2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        Hzp9.Add(self.Dsfilitm, 1, wx.ALL, 5)
+
         Vzp2.Add(Hzp9, 0, wx.EXPAND, 5)
 
         Hzp10 = wx.WrapSizer(wx.HORIZONTAL, 0)
@@ -337,7 +349,7 @@ class MyPanel1(wx.Panel):
     # def opnicn( self, event ):
     def putData(self, Data):
         # print(Data)
-        self.fld0.SetValue(str(Data[0]))
+        self.fld0.SetValue(str(Data[1]))
         if self.Data[11] != None:
             self.fld1.SetValue(Data[11])
         if Data[2] == None:
@@ -367,6 +379,11 @@ class MyPanel1(wx.Panel):
         if Data[15] != None and Data[15] == '0000':
             self.cBox2.SetValue(True)
 
+        if Data[18] != '':
+            self.Doprgitm.SetValue(Data[18])
+        if Data[19] != '' and Data[19] == '100':
+            self.file1.SetPath(GUI_PATH+'Temp\\'+Data[18]+'.py')
+
         self.Update()
 
     # self.Layout()
@@ -388,18 +405,43 @@ class MyPanel1(wx.Panel):
         event.Skip()
 
     def chngfil(self, event):
-        event.Skip()
+        ifile = self.file1.GetPath()
+        self.Doprgitm.SetValue(ifile.replace(GUI_PATH,'')[:-3].replace('\\','.'))
+        #event.Skip()
 
     def prvw(self, event):
+        #print(self.file1.GetPath())
+        #print(self.Doprgitm.GetValue())
+        i = self.file1.GetPath()
+        i1 = i.replace(GUI_PATH,'GUI.')
+        i2 = i1.replace('\\','.')
+        i3 = i2.replace(i[-3:],'')
+        #print(i3)
+        a = importlib.import_module(i3)
+        #s = a.size() if 'size' in dir(a) else ()
+        win1 = wx.Frame(self, -1)
+        #win1.SetSize(s)
+        a.main(win1)
+
         event.Skip()
 
     def opnfil(self, event):
-        event.Skip()
+        print(self.file1.GetPath())
+
+        self.Frm = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
+        self.Pnl = PyPanel(self.Frm,self.file1.GetPath())
+        self.Frm.SetSize((700, 560))
+        self.Frm.Show()
+        #event.Skip()
 
     def newfil(self, event):
         event.Skip()
 
     def anliz1(self, event):
+        ial = Anlzfil(self.file1.GetPath())
+        ial.parsefil()
+        ial.showParse()
+        self.Dsfilitm.SetValue(ial.getGUIfil())
         event.Skip()
 
     def pars1(self, event):
@@ -428,7 +470,11 @@ class MyPanel1(wx.Panel):
         #print(D)
         #print(self.Data)
         extid = D[0][0] + D[0][-1] + D[7] + self.C + D[2][0] + D[0][1:]
-        hndid = 10001
+        if self.Doprgitm == '':
+            hndid = 10001
+        else:
+            hndid = self.getHandel(self.Doprgitm.GetValue(),self.file1.GetPath())
+        print(hndid)
         Dsri1 = [self.Data[0], int(D[0]), D[2], D[7], extid, hndid]
         Dsri2 = [extid, D[6], D[3].replace(ICON16_PATH, ''), D[4], D[5], D[1], 1]
         if D[8]:
@@ -446,7 +492,7 @@ class MyPanel1(wx.Panel):
         if self.Button == 'AddNew':
             self.setMDate.Additem(u'mbarid, itemid, itemname, itemtyp, extid, handlerid ', Dsri1)
         elif self.Button == 'UpDate':
-            self.setMDate.Upditem(u'itemname = ?, itemtyp = ?  where itemid = %d'% self.Data[1] ,[D[2], D[7]])
+            self.setMDate.Upditem(u'itemname = ?, itemtyp = ? , handlerid = ?  where itemid = %d'% self.Data[1] ,[D[2], D[7],hndid])
             #print('write it')
         elif self.Button == 'Delete':
             self.setMDate.Delitem(u'mitem.itemid = %d'% self.Data[1])
@@ -553,6 +599,13 @@ class MyPanel1(wx.Panel):
                     else:
                         print(i)
 
+    def getHandel(self, imodel, pathfile):
+        pr = self.getMData.AllHndl()
+        m = imodel.split('.')[1]
+        for p in pr:
+            if m in p:
+                return p[0]
+        return m
 
 
     def Save(self, event):
@@ -586,3 +639,4 @@ class MyPanel1(wx.Panel):
         Data8 = self.cBox1.GetValue()
         Data9 = self.cBox2.GetValue()
         return [Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9]
+

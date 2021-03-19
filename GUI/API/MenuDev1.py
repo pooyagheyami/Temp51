@@ -13,7 +13,7 @@ import wx.dataview
 import wx.stc as stc
 
 import Database.MenuSet2 as MS
-import GUI.API.MitemFrm as MF
+import GUI.API.MitemFrm2 as MF
 
 from Config.Init import *
 

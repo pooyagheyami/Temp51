@@ -85,6 +85,9 @@ class GetData:
           from handler join mitem on mitem.handlerid = handler.handlerid
           WHERE  mitem.handlerid  notnull """)
 
+    def AllHndl(self):
+        return sq.wxsqltxt(self.DBF,""" select * from handler""")
+
     def GetTB(self):
         return sq.wxsqltxt(self.DBF,"""select toolbar.toolid,toolbar.toolname,toolbar.toolicon,toolbar.shrttxt,handler.prgname 
                                        from toolbar left join handler
