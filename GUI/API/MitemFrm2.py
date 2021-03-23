@@ -12,6 +12,7 @@ import wx.xrc
 
 from AI.OpnFil import *
 from AI.Analiz import *
+from AI.Generats import *
 
 from Config.Init import *
 
@@ -458,6 +459,26 @@ class MyPanel1 ( wx.Panel ):
         event.Skip()
 
     def gnrt1( self, event ):
+        if self.Doprgitm.GetValue() == u'buyit':
+            if self.file1.GetPath()[-7:] == u'Pnl0.py':
+                wx.MessageBox(u'No Change any thing !')
+            else:
+                wx.MessageBox(u"Please change name of program we can not write over this file!")
+        else:
+            myfil = self.MbarDir.GetValue()+ '\\' + self.Doprgitm.GetValue() + u'.py'
+            #print(myfil)
+            G = Genrate(myfil)
+            G.createFrm(self.file1.GetPath())
+            d1 = int(str(self.Data[0])[0]+str(self.Data[1])[-3:]+str(self.Data[0])[-1])
+            d2 = self.Doprgitm.GetValue()
+            d3 = str(self.Data[0])
+            d4 = u'-1'
+            d5 = -1
+
+            self.setMDate.Table = u'handler'
+            self.setMDate.Additem(u"handlerid, prgname, prgdir, paramtr, public",[d1,d2,d3,d4,d5] )
+            wx.MessageBox(u"successful Generate . Please press [apply] button")
+
         event.Skip()
 
     def Dbfile( self, event ):
@@ -593,10 +614,10 @@ class MyPanel1 ( wx.Panel ):
         mb = mw.GetMenuBar()
         lmb = mb.GetMenus()
         for l in lmb:
-            print(l)
+            #print(l)
             if self.barname in l:
                 itms = l[0].GetMenuItems()
-                print(dir(itms[-1]))
+                #print(dir(itms[-1]))
                 for i in itms:
                     print(i.GetId())
                     if i.IsSeparator() and self.Data[2] == u'Separator':

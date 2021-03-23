@@ -1,8 +1,11 @@
+#In the name of GOD
 # -*- coding: utf-8 -*-
 
 
 import wx
 import wx.stc as stc
+
+from Config import *
 
 import keyword
 
@@ -109,35 +112,9 @@ class PythonSTC(stc.StyledTextCtrl):
 
         self.SetText(text)
 
+    def slctal(self):
+        self.SelectAll()
 
-'''
-class PyPanel(wx.Panel):
-
-	def __init__(self, parent, pyFile, style = wx.TAB_TRAVERSAL, name = wx.EmptyString):
-		wx.Panel.__init__(self, parent, style = style, name = name )
-
-		sizer0 = wx.BoxSizer(wx.VERTICAL)
-
-		self.py_view = PythonSTC(self,pyFile)
-
-		sizer1 = wx.BoxSizer(wx.VERTICAL)
-		sizer1.Add(self.py_view, 1, wx.EXPAND, 5)
-
-		sizer0.Add(sizer1, 1, wx.EXPAND, 5)
-
-		sizer2 = wx.BoxSizer(wx.HORIZONTAL)
-
-		self.Btn1 = wx.Button(self, wx.ID_ANY, u"Ok", wx.DefaultPosition, wx.DefaultSize, 0)
-		sizer2.Add(self.Btn1, 0, wx.EXPAND, 5)
-
-		self.Btn2 = wx.Button(self, wx.ID_ANY, u"Ok", wx.DefaultPosition, wx.DefaultSize, 0)
-		sizer2.Add(self.Btn2, 0, wx.EXPAND, 5)
-
-		sizer0.Add(sizer2, 0, wx.EXPAND, 5)
-
-		self.SetSizer(sizer0)
-		self.Layout()
-'''
 
 
 ###########################################################################
@@ -149,6 +126,8 @@ class PyPanel(wx.Panel):
     def __init__(self, parent, pyFile, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.Size(680, 465),
                  style=wx.TAB_TRAVERSAL, name=wx.EmptyString):
         wx.Panel.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
+
+        self.pyFile = pyFile
 
         Vz1 = wx.BoxSizer(wx.VERTICAL)
 
@@ -168,6 +147,20 @@ class PyPanel(wx.Panel):
 
         self.btn5 = wx.Button(self, wx.ID_ANY, u"Paste", wx.DefaultPosition, wx.DefaultSize, 0)
         Vz2.Add(self.btn5, 0, wx.ALL, 5)
+
+        Vz2.Add((0, 0), 1, wx.EXPAND, 5)
+
+        self.btn6 = wx.Button(self, wx.ID_ANY, u"line-close", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btn6.SetToolTip(u"add close code to button function")
+        Vz2.Add(self.btn6, 0, wx.ALL, 5)
+
+        self.btn7 = wx.Button(self, wx.ID_ANY, u"line-getdata", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btn7.SetToolTip(u"get data from fields textctrl ")
+        Vz2.Add(self.btn7, 0, wx.ALL, 5)
+
+        self.btn8 = wx.Button(self, wx.ID_ANY, u"linr-putdata", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btn8.SetToolTip(u"put data to fields textctrl")
+        Vz2.Add(self.btn8, 0, wx.ALL, 5)
 
         Vz2.Add((0, 0), 1, wx.EXPAND, 5)
 
@@ -191,22 +184,59 @@ class PyPanel(wx.Panel):
         self.btn1.Bind(wx.EVT_BUTTON, self.svefil)
         self.btn2.Bind(wx.EVT_BUTTON, self.clos)
 
+        self.btn6.Bind(wx.EVT_BUTTON, self.line_clos)
+        self.btn7.Bind(wx.EVT_BUTTON, self.line_gets)
+        self.btn8.Bind(wx.EVT_BUTTON, self.line_puts)
+
     def __del__(self):
         pass
 
     # Virtual event handlers, overide them in your derived class
     def slctal(self, event):
+        self.py_view.SelectAll()
         event.Skip()
 
     def cpyslct(self, event):
+        self.py_view.Copy()
         event.Skip()
 
     def pstslct(self, event):
+        self.py_view.Paste()
         event.Skip()
 
     def svefil(self, event):
+        if u'untitle.py' in self.pyFile:
+
+            with wx.FileDialog(self, "Save new file", wildcard="Python files (*.py)|*.py",
+                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+
+                if fileDialog.ShowModal() == wx.ID_CANCEL:
+                    return  # the user changed their mind
+
+                # save the current contents in the file
+                pathname = fileDialog.GetPath()
+                print(pathname)
+                self.py_view.SaveFile(pathname)
+        else:
+            self.py_view.SaveFile(self.pyFile)
+            wx.MessageBox(u'You save to file change successful.')
         event.Skip()
 
     def clos(self, event):
         q = self.GetParent()
         q.Close()
+
+    def line_clos(self, event):
+        print(self.getpos())
+        self.py_view.AddText("\t\tq = self.GetParent()\n\t\tq.Close()\n")
+
+
+    def line_gets(self, event):
+        pass
+
+    def line_puts(self, event):
+        pass
+
+    def getpos(self):
+        return self.py_view.GetPosition()
+

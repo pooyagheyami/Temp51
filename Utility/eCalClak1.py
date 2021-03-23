@@ -1,14 +1,16 @@
-# -*- coding: cp1256 -*-
+# -*- coding: utf-8 -*-
 #In the name of God
 #!/usr/bin/env python
-# -*- codnig: utf-8 -*-
+
 
 
 import wx
 import wx.lib.analogclock as ac
-#import calendar51
-import khayyam 
+import calendar
+from convertdate import utils
+
 from datetime import timedelta
+import datetime
 import  wx.lib.buttons  as  buttons
 
 #----------------------------------------------------------------------
@@ -27,6 +29,14 @@ R = PyEmbeddedImage(
     "QVQokdXTyREAIAgDQGP/PccCgEQZfeh/R44AkuP8zYa5zQA0f9NSFSmk6a2SfiSp3JpklC/3"
     "FpPkWZo+w6rEKiZSXjJ9GfjhcBZM5RUgzLJUOgAAAABJRU5ErkJggg==")
 
+Day_name = []
+Month_name = []
+for i in range(6):
+    Day_name.append(wx.DateTime.GetEnglishWeekDayName(i+1, 2))
+Day_name.append(wx.DateTime.GetEnglishWeekDayName(0, 2))
+for i in range(12):
+    Month_name.append(wx.DateTime.GetEnglishMonthName(i, 2))
+
 
 ###########################################################################
 ## Class MyPanel2
@@ -34,203 +44,198 @@ R = PyEmbeddedImage(
 
 
 class MyPanel2 ( wx.Panel ):
-    
-    def __init__( self, parent , year , month ):
-        wx.Panel.__init__ ( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 400,200 ), style = wx.TAB_TRAVERSAL )
 
-        self.SetLayoutDirection(2)
-        bSizer13 = wx.BoxSizer( wx.VERTICAL )
-        
-        bSizer16 = wx.BoxSizer( wx.HORIZONTAL )
+    def __init__( self, parent,year,month, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 400,200 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+        wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
+        Vsiz1 = wx.BoxSizer( wx.VERTICAL )
+        Hsz1 = wx.BoxSizer( wx.HORIZONTAL )
 
-        if year==-1:
-            sal=khayyam.JalaliDate.today().strftime('%N')
-            self.sallat = int(khayyam.JalaliDate.today().strftime('%Y'))
+        if year == -1:
+            self.sallat = int(datetime.date.today().strftime('%Y'))
+            sal = datetime.date.today().strftime('%Y')
         else:
-            sal = khayyam.JalaliDate(year=year).strftime('%N')
-            self.sallat = int(khayyam.JalaliDate(year=year).strftime('%Y'))
-        if month==-1:
-             mah=khayyam.JalaliDate.today().strftime('%B')
-             self.mahlat = int(khayyam.JalaliDate.today().strftime('%m'))
+            self.sallat = year
+            sal = str(year)
+        if month == -1:
+            self.mahlat = int(datetime.date.today().strftime('%m'))
+            mah = datetime.date.today().strftime('%m')
         else:
-             mah = khayyam.JalaliDate(month=month).strftime('%B')
-             self.mahlat = int(khayyam.JalaliDate(month=month).strftime('%m'))
-        
-        
-        self.w = self.firstweekofmonth(self.sallat,self.mahlat)
+            self.mahlat = month
+            mah = str(month)
 
-        
-        self.m_bpButton1 = wx.BitmapButton( self, wx.ID_ANY,  R.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
-        bSizer16.Add( self.m_bpButton1, 0, wx.ALIGN_CENTER, 5 )
+        mrooz = datetime.date.today().strftime('%d')
 
-        self.m_button1 = buttons.GenButton(self, wx.ID_ANY, mah+' '+sal,wx.DefaultPosition, wx.Size( -1,20 ) ,style=wx.BORDER_NONE)
-        self.m_button1.SetLayoutDirection(1)
-        #print self.m_button1.GetPosition()
-                
-        
-        #self.m_button1 = wx.Button( self, wx.ID_ANY, mah+' '+sal, wx.DefaultPosition, wx.Size( -1,20 ), wx.BU_BOTTOM )
-        bSizer16.Add( self.m_button1, 1, wx.ALL, 5 )
-        
-        self.m_bpButton2 = wx.BitmapButton( self, wx.ID_ANY,  L.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
-        bSizer16.Add( self.m_bpButton2, 0, wx.ALIGN_CENTER, 5 )
-        
-        
-        bSizer13.Add( bSizer16, 1, wx.EXPAND, 5 )
-        
-        bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+        self.bkbtn = wx.BitmapButton( self, wx.ID_ANY, L.GetBitmap(), wx.DefaultPosition, wx.Size( 18,18 ), wx.BU_AUTODRAW )
+        Hsz1.Add( self.bkbtn, 0, wx.ALIGN_CENTER, 5 )
 
-        haft = khayyam.jalali_date.PERSIAN_WEEKDAY_NAMES
+        self.mbtn = buttons.GenButton( self, wx.ID_ANY, Month_name[int(mah)-1]+' '+sal, wx.DefaultPosition, wx.Size( -1,20 ), style=wx.BORDER_NONE )
+        Hsz1.Add( self.mbtn, 1, wx.ALL, 5 )
+
+        self.nxbtn = wx.BitmapButton( self, wx.ID_ANY, R.GetBitmap(), wx.DefaultPosition, wx.Size( 18,18 ), wx.BU_AUTODRAW )
+        Hsz1.Add( self.nxbtn, 0, wx.ALIGN_CENTER, 5 )
+
+        #Vsiz1.Add( Hsz1, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+        Vsiz1.Add( Hsz1, 1, wx.EXPAND, 5 )
+
+        Hsz2 = wx.BoxSizer( wx.HORIZONTAL )
 
         for i in range(7):
-            self.m_staticText23 = wx.StaticText( self, wx.ID_ANY, haft[i], wx.DefaultPosition, wx.Size( 35,-1 ), wx.ALIGN_CENTRE )
-            self.m_staticText23.Wrap( -1 )
-            bSizer22.Add( self.m_staticText23, 1, wx.ALL|wx.EXPAND, 5 )
+            self.m_Days = wx.StaticText( self, wx.ID_ANY, Day_name[i], wx.DefaultPosition, wx.Size( 35,-1 ), wx.ALIGN_CENTRE )
+            self.m_Days.Wrap( -1 )
+            #Hsz2.Add( self.m_Days, 1, wx.ALL|wx.EXPAND, 5 )
+            Hsz2.Add( self.m_Days, 1, 0, 5 )
 
-                
-        bSizer13.Add( bSizer22, 1, wx.EXPAND, 5 )
-        
-        self.gSizer2 = wx.GridSizer( 6, 7, 1, 1 )
 
-        labl=self.calntxt(self.sallat,self.mahlat)
-        #print labl
+        Vsiz1.Add( Hsz2, 1, wx.EXPAND, 5 )
+        #Vsiz1.Add( Hsz2, 0, wx.EXPAND, 0 )
+
+        Gsiz = wx.GridSizer( 6, 7, 1, 1 )
+
+
+
+        label = calendar.monthcalendar(self.sallat,self.mahlat)
+        if self.mahlat == 1:
+            lst = max(calendar.monthcalendar(self.sallat, 12)[-1])
+        else:
+            lst = max(calendar.monthcalendar(self.sallat,self.mahlat-1)[-1])
         i=0
-        self.caltext=[]
+        #print(label)
+        ilabel = self.re_label(label,lst)
+        #print(ilabel)
+        self.caltext = []
+
 
         for row in range(6):
             for clm in range(7):
-
-                self.caltext.append( wx.Button( self, wx.ID_ANY, labl[i], wx.DefaultPosition, wx.Size( 35,15 ),wx.NO_BORDER ))
-                self.gSizer2.Add( self.caltext[i], 0, wx.EXPAND, 0 )
-                                
+                self.caltext.append( wx.Button( self, wx.ID_ANY, str(ilabel[row][clm]), wx.DefaultPosition, wx.Size( 35,15 ),wx.NO_BORDER) )
+                Gsiz.Add( self.caltext[i], 0, wx.EXPAND, 0 )
                 if clm == 6:
-                    self.caltext[i].SetBackgroundColour( wx.Colour( 0, 238, 0 ) )
+                    self.caltext[i].SetBackgroundColour(wx.Colour( 0, 238, 0 ))
                 else:
                     self.caltext[i].SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW  ) )
 
-                    if row == 0  and int(labl[i]) > 7 or row >=  4 and int(labl[i]) < 13:
-                        self.caltext[i].SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-                    else:
-                        self.caltext[i].SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-                i= i+1
+                    if ilabel[row][clm] == int(mrooz):
+                        self.caltext[i].SetBackgroundColour( wx.Colour( 70, 170, 240 ) )
 
-                
-        rooz = int(khayyam.JalaliDate.today().strftime('%d'))
-        
-        a=self.calnom(self.sallat,self.mahlat,rooz)
-        
-        if a > 0:
-            self.caltext[a].SetBackgroundColour( wx.Colour( 70, 170, 240 ) )
+                if row == 0 and int(ilabel[0][clm]) > 7 :
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+                elif row == 4 and int(ilabel[4][clm]) < 13:
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+                elif row == 5 and int(ilabel[5][clm]) < 15:
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+                else:
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
 
-        
-        now = khayyam.JalaliDate.today().strftime('%x')
-        txt = u':ÇãÑæÒ'
-        bSizer13.Add( self.gSizer2, 5, wx.EXPAND, 5 )
-        
-        bSizer18 = wx.BoxSizer( wx.VERTICAL )
-        
-        self.m_staticText22 = wx.StaticText( self, wx.ID_ANY, txt+now, wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_staticText22.Wrap( -1 )
-        bSizer18.Add( self.m_staticText22, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        bSizer13.Add( bSizer18, 1, wx.EXPAND, 5 )
-        
-        
-        self.SetSizer( bSizer13 )
+                i = i +1
+
+        Vsiz1.Add( Gsiz, 5, wx.EXPAND, 5 )
+
+        Vsz3 = wx.BoxSizer( wx.VERTICAL )
+
+        today = datetime.date.today().isoformat()
+
+        self.daytxt = wx.StaticText( self, wx.ID_ANY, u"Today: "+today, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.daytxt.Wrap( -1 )
+
+        Vsz3.Add( self.daytxt, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+        Vsiz1.Add( Vsz3, 1, wx.EXPAND, 5 )
+        self.SetSizer( Vsiz1 )
         self.Layout()
 
-        self.m_bpButton1.Bind( wx.EVT_BUTTON, self.Onleft )
-        self.m_bpButton2.Bind( wx.EVT_BUTTON, self.Onright )
-        self.m_button1.Bind( wx.EVT_BUTTON, self.Onmonth )
-        
-    def firstweekofmonth(self,year,month):
-        #print int(khayyam.JalaliDate(year,month,1).strftime('%w'))
-        return int(khayyam.JalaliDate(year,month,1).strftime('%w'))
+        # Connect Events
+        self.bkbtn.Bind( wx.EVT_BUTTON, self.Onbak )
+        self.mbtn.Bind( wx.EVT_BUTTON, self.Onmonth )
+        self.nxbtn.Bind( wx.EVT_BUTTON, self.Onnxt )
 
-    def Onleft( self, event ):
+    def __del__( self ):
+        pass
+
+    # Virtual event handlers, overide them in your derived class
+    def Onnxt( self, event ):
         self.mahlat=self.mahlat+1
         if self.mahlat>12:
             self.sallat=self.sallat+1
             self.mahlat=1
 
-        mah=khayyam.JalaliDate(self.sallat,self.mahlat).monthname()
-        self.m_button1.SetLabel(mah+' '+str(self.sallat))
-        
+        mah =  Month_name[self.mahlat-1]
+        self.mbtn.SetLabel(mah+' '+str(self.sallat))
         self.calgrid()
-        
+
         self.HideWithEffect(5,200)
-        self.Show()
+        self.ShowWithEffect(5,200)
         self.Refresh()
         self.Layout()
-        #event.Skip()
-    
-    def Onright( self, event ):
+
+    def Onbak( self, event ):
         self.mahlat=self.mahlat-1
         if self.mahlat<=0:
             self.sallat=self.sallat-1
             self.mahlat=12
-                      
-        mah=khayyam.JalaliDate(self.sallat,self.mahlat).monthname()         
-        self.m_button1.SetLabel(mah+' '+str(self.sallat))
-        
+
+        mah =  Month_name[self.mahlat-1]
+        self.mbtn.SetLabel(mah+' '+str(self.sallat))
+
         self.calgrid()
-        
         self.HideWithEffect(6,200)
-        self.Show()
+        self.ShowWithEffect(6,200)
         self.Refresh()
         self.Layout()
-        #event.Skip()
+
     def calgrid(self):
-        labl=self.calntxt(self.sallat,self.mahlat)
+        label = calendar.monthcalendar(self.sallat,self.mahlat)
+        if self.mahlat == 1:
+            lst = max(calendar.monthcalendar(self.sallat, 12)[-1])
+        else:
+            lst = max(calendar.monthcalendar(self.sallat, self.mahlat - 1)[-1])
         i=0
-        #print self.m_textCtrl17.GetParent()
+        #self.caltext = []
+        ilabel = self.re_label(label, lst)
+
+
         for row in range(6):
             for clm in range(7):
-                self.caltext[i].SetLabel(labl[i])
-                if row == 0  and int(labl[i]) > 7 or row >=  4 and int(labl[i]) < 13:
-                    self.caltext[i].SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-                else:
-                    self.caltext[i].SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) ) 
+                self.caltext[i].SetLabel(  str(ilabel[row][clm]) )
 
-                i = i+1
-        
-    def calntxt(self,sal,mah):
-        label = []
-        a=0
-        c=1
-        b=1
-        for d in range(42):
-                                               
-            if d < self.firstweekofmonth(sal,mah):
-                
-                                 
-                label.append((khayyam.JalaliDate(sal,mah,1)-
-                               timedelta(days=
-                             (self.firstweekofmonth(sal,mah)-d))).strftime('%d'))
-                                             
-                                
-                                
-            if d >= self.firstweekofmonth(sal,mah):
-                if c > khayyam.JalaliDate(sal,mah).daysinmonth:
-                    a=a+1
-                    label.append(str(a))
+                if row == 0 and int(ilabel[0][clm]) > 7 :
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+                elif row == 4 and int(ilabel[4][clm]) < 13:
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+                elif row == 5 and int(ilabel[5][clm]) < 15:
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
                 else:
-                    label.append(str(c))
-                    c=c+1
-                        
-                                
-        return label
-    def calnom(self,sal,mah,rooz):
-        #a=self.firstweekofmonth(sal,mah)
-        i = -1
-         
-        if sal == int(khayyam.JalaliDate.today().strftime("%Y")) and mah == int(khayyam.JalaliDate.today().strftime("%m")) and rooz == int(khayyam.JalaliDate.today().strftime("%d")):
-            #h = int(khayyam.JalaliDate.today().strftime("%w"))
-            i = rooz + (self.w-1)
-            #print self.w,i,h
-            
-        return i
-        
+                    self.caltext[i].SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+
+                #if label[row][clm] == int(mrooz):
+                    #            self.caltext[i].SetBackgroundColour( wx.Colour( 70, 170, 240 ) )
+
+                i = i +1
+
+    def re_label(self, labl, lst_mnt_day):
+        i = 1
+        lr = []
+        pstw = labl[0].count(0)
+        if pstw != 0:
+            for w in range(7):
+                if labl[0][w] == 0:
+                    labl[0][w] = lst_mnt_day-pstw+w+1
+        lstw = labl[-1].count(0)
+        if lstw != 0:
+            for w in range(7):
+                if labl[-1][w] == 0:
+                    labl[-1][w] = i
+                    i += 1
+        if len(labl) < 6:
+            for m in range(6-len(labl)):
+                #print(len(labl), i)
+                lr = []
+                for w in range(7):
+                    lr.append(i)
+                    i += 1
+                labl.append(lr)
+
+        return labl
+
 
     def Onmonth( self, event ):
         self.HideWithEffect(10,200)
@@ -239,68 +244,62 @@ class MyPanel2 ( wx.Panel ):
         self.Show()
 
 
+
+
+
 class MyPanel3 ( wx.Panel ):
-    
-    
     def __init__( self, parent , year  ):
         wx.Panel.__init__ ( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 400,200 ), style = wx.TAB_TRAVERSAL )
 
-        self.SetLayoutDirection(2)
         bSizer15 = wx.BoxSizer( wx.VERTICAL )
-        
+
         bSizer16 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.sal=khayyam.JalaliDate(year=year).strftime('%N')
-        self.sallat = int(khayyam.JalaliDate(year=year).strftime('%Y'))
-        
-        self.m_bpButton1 = wx.BitmapButton( self, wx.ID_ANY,  R.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
+        self.sallat = year
+        self.sal = str(year)
+
+        self.m_bpButton1 = wx.BitmapButton( self, wx.ID_ANY,  L.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
         bSizer16.Add( self.m_bpButton1, 0, wx.ALIGN_CENTER, 5 )
-        
+
         self.m_staticText18 = buttons.GenButton( self, wx.ID_ANY, self.sal, wx.DefaultPosition, wx.DefaultSize, style=wx.BORDER_NONE )
-        self.m_staticText18.SetLayoutDirection(1)
         #self.m_staticText18.Wrap( -1 )
-        bSizer16.Add( self.m_staticText18, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_bpButton2 = wx.BitmapButton( self, wx.ID_ANY, L.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
+        bSizer16.Add( self.m_staticText18, 1, wx.ALL, 5 )
+
+        self.m_bpButton2 = wx.BitmapButton( self, wx.ID_ANY, R.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
         bSizer16.Add( self.m_bpButton2, 0, wx.ALIGN_CENTER, 5 )
 
         #self.m_button2.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOBK ) )
         #self.m_button2.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_HIGHLIGHT ) )
 
-        
         bSizer15.Add( bSizer16, 1, wx.EXPAND, 5 )
-        
+
         gSizer1 = wx.GridSizer( 3, 4, 0, 0 )
 
-        mont = khayyam.jalali_date.PERSIAN_MONTH_NAMES
+        mont = Month_name
 
         self.moncal = []
         i = 0
         MID = range(12)
 
         for mah in range(12):
-            self.moncal.append( wx.Button( self, MID[i], mont[mah+1], wx.DefaultPosition, wx.DefaultSize, 0 ))
+            self.moncal.append( wx.Button( self, MID[i], mont[mah], wx.DefaultPosition, wx.DefaultSize, 0 ))
                         
             gSizer1.Add( self.moncal[i], 0, wx.EXPAND, 5 )
                 
             self.moncal[i].Bind( wx.EVT_BUTTON, self.Onmonth )
             i = i + 1
-                        
-                        
-        now = khayyam.JalaliDate.today().strftime('%x')
-        txt = u'ÇãÑæÒ'
-        
+
         bSizer15.Add( gSizer1, 5, wx.EXPAND, 1 )
         
         bSizer17 = wx.BoxSizer( wx.VERTICAL )
         
-        self.m_staticText19 = wx.StaticText( self, wx.ID_ANY, txt+now, wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_staticText19.Wrap( -1 )
-        bSizer17.Add( self.m_staticText19, 0, wx.ALIGN_CENTER, 1 )
-        
-        
+        today = datetime.date.today().isoformat()
+
+        self.daytxt = wx.StaticText( self, wx.ID_ANY, u"BugÃ¼n: "+today, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.daytxt.Wrap( -1 )
+        bSizer17.Add( self.daytxt, 0, wx.ALIGN_CENTER, 1 )
+
         bSizer15.Add( bSizer17, 1, wx.EXPAND, 5 )
-        
         
         self.SetSizer( bSizer15 )
         self.Layout()
@@ -312,7 +311,7 @@ class MyPanel3 ( wx.Panel ):
     def Onleft( self, event ):
                         
         self.sallat=self.sallat+1
-        self.m_staticText18.SetLabel(e2f(unicode(int(self.sallat))))
+        self.m_staticText18.SetLabel(str(int(self.sallat)))
         self.HideWithEffect(5,200)
         self.Show()
         self.Refresh()
@@ -322,7 +321,7 @@ class MyPanel3 ( wx.Panel ):
     
     def Onright( self, event ):
         self.sallat=self.sallat-1
-        self.m_staticText18.SetLabel(e2f(unicode(int(self.sallat))))
+        self.m_staticText18.SetLabel(str(int(self.sallat)))
         self.HideWithEffect(6,200)
         self.Show()
         self.Refresh()
@@ -332,11 +331,11 @@ class MyPanel3 ( wx.Panel ):
     def Onmonth( self, event ):
         n=event.GetId()
         m=self.moncal[n].GetLabel()
-                
+        #print n,m        
         #sal=khayyam.JalaliDate.today().strftime('%N')
-        sal = int(khayyam.JalaliDate(year=self.sallat).strftime('%Y'))
+        sal = self.sallat
         #mah=khayyam.JalaliDate.today().strftime('%B')
-        mah = int(khayyam.JalaliDate(month=n+1).strftime('%m'))
+        mah = n+1
         #print sal,mah
         
         self.HideWithEffect(10,200)
@@ -355,29 +354,28 @@ class MyPanel4 ( wx.Panel ):
     def __init__( self, parent , years  ):
         wx.Panel.__init__ ( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 400,200 ), style = wx.TAB_TRAVERSAL )
 
-        self.SetLayoutDirection(2)
+        
         bSizer15 = wx.BoxSizer( wx.VERTICAL )
         
         bSizer16 = wx.BoxSizer( wx.HORIZONTAL )
         y = int(years / 10)*10
         yers = [y+i for i in range(12) ]
 
-        self.sal=khayyam.JalaliDate(year=yers[0]).strftime('%N')
-        self.salbd=khayyam.JalaliDate(year=yers[-1]).strftime('%N')
-        self.sallat = int(khayyam.JalaliDate(year=yers[0]).strftime('%Y'))
-        self.sallatbd = int(khayyam.JalaliDate(year=yers[-1]).strftime('%Y'))
+        self.sal=str(yers[0])
+        self.salbd=str(yers[-1])
+        self.sallat = yers[0]
+        self.sallatbd = yers[-1]
         
-        self.m_bpButton1 = wx.BitmapButton( self, wx.ID_ANY,  R.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
+        self.m_bpButton1 = wx.BitmapButton( self, wx.ID_ANY,  L.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
         bSizer16.Add( self.m_bpButton1, 0, wx.ALIGN_CENTER, 5 )
         
         #self.m_staticText18 = buttons.GenButton( self, wx.ID_ANY, self.sal+u'-'+self.salbd, wx.DefaultPosition, wx.DefaultSize, style=wx.BORDER_NONE )
         self.m_staticText18 = wx.StaticText( self, wx.ID_ANY, self.sal+u'-'+self.salbd, wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTRE )
-
-        self.m_staticText18.SetLayoutDirection(1)
-        self.m_staticText18.Wrap( -1 )
-        bSizer16.Add( self.m_staticText18, 1, wx.ALIGN_CENTER|wx.ALL, 1 )
+       
+        #self.m_staticText18.Wrap( -1 )
+        bSizer16.Add( self.m_staticText18, 1, wx.ALL, 5 )
         
-        self.m_bpButton2 = wx.BitmapButton( self, wx.ID_ANY, L.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
+        self.m_bpButton2 = wx.BitmapButton( self, wx.ID_ANY, R.GetBitmap(), wx.DefaultPosition, wx.Size( 15,15 ), wx.BU_AUTODRAW )
         bSizer16.Add( self.m_bpButton2, 0, wx.ALIGN_CENTER, 5 )
 
         #self.m_button2.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOBK ) )
@@ -395,7 +393,7 @@ class MyPanel4 ( wx.Panel ):
         YID = range(12)
 
         for yer in yers:
-            self.yercal.append( wx.Button( self, YID[i], e2f(unicode(yer)), wx.DefaultPosition, wx.DefaultSize, 0 ))
+            self.yercal.append( wx.Button( self, YID[i], str(yer), wx.DefaultPosition, wx.DefaultSize, 0 ))
                        
             gSizer1.Add( self.yercal[i], 0, wx.EXPAND, 5 )
                 
@@ -403,16 +401,16 @@ class MyPanel4 ( wx.Panel ):
             i = i + 1
                         
                         
-        now = khayyam.JalaliDate.today().strftime('%x')
-        txt = u'ÇãÑæÒ'
-        
+               
         bSizer15.Add( gSizer1, 5, wx.EXPAND, 1 )
         
         bSizer17 = wx.BoxSizer( wx.VERTICAL )
         
-        self.m_staticText19 = wx.StaticText( self, wx.ID_ANY, txt+now, wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_staticText19.Wrap( -1 )
-        bSizer17.Add( self.m_staticText19, 0, wx.ALIGN_CENTER, 1 )
+        today = datetime.date.today().isoformat()
+
+        self.daytxt = wx.StaticText( self, wx.ID_ANY, u"BugÃ¼n: "+today, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.daytxt.Wrap( -1 )
+        bSizer17.Add( self.daytxt, 0, wx.ALIGN_CENTER, 1 )
         
         
         bSizer15.Add( bSizer17, 1, wx.EXPAND, 5 )
@@ -451,9 +449,9 @@ class MyPanel4 ( wx.Panel ):
         y = int(int(self.sallat)/ 10)*10
         yers = [y+i for i in range(12) ]
         for l in range(12):
-            self.yercal[l].SetLabel(unicode(yers[l]))
+            self.yercal[l].SetLabel(str(yers[l]))
             #print type(yers[0])        
-            self.m_staticText18.SetLabel(e2f(unicode(yers[0]))+u'-'+e2f(unicode(yers[-1])))
+            self.m_staticText18.SetLabel(str(yers[0])+u'-'+str(yers[-1]))
             
 
         
@@ -464,17 +462,13 @@ class MyPanel4 ( wx.Panel ):
         m=self.yercal[n].GetLabel()
         #print m
         #sal=khayyam.JalaliDate.today().strftime('%N')
-        sal = int(khayyam.JalaliDate(year=m).strftime('%Y'))
-        #mah=khayyam.JalaliDate.today().strftime('%B')
-        #mah = int(khayyam.JalaliDate(month=n+1).strftime('%m'))
-        #print sal,mah
-        #print unicode(sal)
-        #print e2f(unicode(sal))
+        sal = int(m)
+        
         self.HideWithEffect(10,200)
         self.DestroyChildren()
         self.panel = MyPanel3(self,sal)
         self.Show()
-        
+'''        
 def e2f(number):
     s = ''  
     adadha = {u'0':1632 , u'1':1633 ,u'2':1634 , u'3':1635 , u'4':1636 ,u'5':1637 ,u'6':1638 ,u'7':1639 ,u'8':1640 ,u'9':1641 }
@@ -485,7 +479,7 @@ def e2f(number):
         #print s
     #print s
     return s
-
+'''
         
 
 class ClockPanel(wx.Panel):
@@ -509,10 +503,8 @@ class ClockPanel(wx.Panel):
 
         bSizer1.Add(c6,0,wx.EXPAND|wx.ALL,5)
 
-	#self.mbtn3 = wx.Button( self, wx.ID_ANY, u">", wx.DefaultPosition, wx.Size( 20,200 ), wx.BU_EXACTFIT )
-	
-	#bSizer1.Add( self.mbtn3, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-
+        #self.mbtn3 = wx.Button( self, wx.ID_ANY, u">", wx.DefaultPosition, wx.Size( 20,200 ), wx.BU_EXACTFIT )
+        #bSizer1.Add( self.mbtn3, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
         #cal1 = MyPanel2(self,-1,-1)
         #bSizer1.Add(cal1,0,wx.EXPAND|wx.ALL,5)
@@ -523,16 +515,16 @@ class ClockPanel(wx.Panel):
         self.Layout()
 
         # Connect Events
-	#self.mbtn3.Bind( wx.EVT_BUTTON, self.docal )
+        #self.mbtn3.Bind( wx.EVT_BUTTON, self.docal )
 
     def __del__( self ):
         pass
-	
-	
+
+
     # Virtual event handlers, overide them in your derived class
     #def docal( self, event ):
     #    event.Skip()
-		
+
 
 # -*- coding: utf-8 -*- 
 
@@ -554,7 +546,7 @@ class MyFrame1 ( wx.Frame ):
     def __init__( self, parent ):
         wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 200,200 ), style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
-        self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
         self.bS1 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -564,10 +556,11 @@ class MyFrame1 ( wx.Frame ):
         self.bS1.Add(clock,0,wx.EXPAND|wx.ALL,1)
 
         self.mbtn3 = wx.Button( self, wx.ID_ANY, u">", wx.DefaultPosition, wx.Size( 20,200 ), wx.BU_EXACTFIT )
-        self.bS1.Add( self.mbtn3, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 1 )
+        self.bS1.Add( self.mbtn3, 1, wx.ALL|wx.EXPAND, 1 )
         
         
         self.cal1 = MyPanel2(self,-1,-1)
+        #self.cal1 = MyPanel2(self)
         self.bS1.Add(self.cal1,0,wx.EXPAND|wx.ALL,5)
 
         self.cal1.Hide()
@@ -582,8 +575,8 @@ class MyFrame1 ( wx.Frame ):
 
     def __del__( self ):
         pass
-	
-	
+
+
     # Virtual event handlers, overide them in your derived class
     def docal( self, event ):
         if self.shohid == 0:
@@ -603,8 +596,8 @@ class MyFrame1 ( wx.Frame ):
             
             
 
-'''
-        
+
+'''        
         
 if __name__ == '__main__':
     

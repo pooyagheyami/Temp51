@@ -19,7 +19,7 @@ import GUI.BG2 as BG
 
 #import Config.basedata as bs
 #import Utility.massage as ms
-import Utility.Tclacal3 as C1
+import Utility.eCalClak1 as C1
 #import Utility.user as user
 from Config.Init import * 
 import wx.dataview
@@ -185,7 +185,7 @@ class MainWin(wx.Frame):
         self.owin = C1.MyFrame1(self)
         #clockpanel = C1.ClockPanel(self.owin)
         self.owin.SetSize((250,250))
-        self.owin.SetPosition((150,50))
+        self.owin.SetPosition((150,100))
         if TPS == 1:
             self.owin.Show()
         elif TPS == 0:
