@@ -4,6 +4,8 @@
 
 import Database.MenuSet2 as MS
 import importlib
+import importlib.util
+from Config.Init import *
 
 
 class Mymenu(object):
@@ -50,7 +52,6 @@ def DoProgram(item,MT):
         if M.menudir(item) != '':
             d = M.menudir(item)
         else:
-
             if M.submndir(item) == '100':
                 d = 'GUI.Temp'
             else:
@@ -62,16 +63,17 @@ def DoProgram(item,MT):
 
     elif MT == 'A':
         p = M.program(item)
-        d = 'GUI.Develop'
+        d = 'GUI.Main'
 
     I = M.Dohndlr()
     #print I
     Ii = []
     for it in I:
         Ii.append(it[0])
-    #print Ii
+    #print(Ii)
     a = d+'.'+p
     #i = __import__(a,globals(),locals(),Ii,0)
+
     i = importlib.import_module(a)
     #print dir(i)
     #i.main()

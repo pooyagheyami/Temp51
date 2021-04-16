@@ -3,9 +3,7 @@
 import sys
 import os
 import codecs
-#from khayyam import *
 
-#NOW = JalaliDatetime.now().strftime('%N/%P/%K')
 MAP = os.getcwd()
 
 if MAP.find(u'\\') > 0:
@@ -27,6 +25,11 @@ def opj(path):
 
 
 DATABASE_PATH = os.path.join(MAP,opj(u'Database')+SLASH)
+
+AI_PATH       = os.path.join(MAP,opj(u'AI')+SLASH)
+ML_PATH       = os.path.join(AI_PATH,opj(u'ML')+SLASH)
+
+DCC_PATH      = os.path.join(MAP,opj(u'DCC')+SLASH)
 
 GUI_PATH      = os.path.join(MAP,opj(u'GUI')+SLASH)
 RES_PATH      = os.path.join(MAP,opj(u'Res')+SLASH)

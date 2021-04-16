@@ -85,16 +85,16 @@ class GetData:
           from handler join mitem on mitem.handlerid = handler.handlerid
           WHERE  mitem.handlerid  notnull """)
 
-    def AllHndl(self):
-        return sq.wxsqltxt(self.DBF,""" select * from handler""")
+    def AllHndl(self, ext=''):
+        return sq.wxsqltxt(self.DBF,""" select * from handler %s """ % ext)
 
     def GetTB(self):
         return sq.wxsqltxt(self.DBF,"""select toolbar.toolid,toolbar.toolname,toolbar.toolicon,toolbar.shrttxt,handler.prgname 
                                        from toolbar left join handler
                                        on toolbar.handlerid = handler.handlerid """)
 
-    def GetAllTB(self):
-        return sq.wxsqltxt(self.DBF,""" select * from toolbar """)
+    def GetAllTB(self, ext=''):
+        return sq.wxsqltxt(self.DBF,""" select * from toolbar %s""" % ext)
 
     def MyTogr(self,itolid=''):
         return sq.wxsqltxt(self.DBF,"""SELECT distinct toolbar.handlerid, handler.prgname
@@ -112,7 +112,12 @@ class GetData:
         return  sq.wxsqltxt(self.DBF,""" select distinct mitem.mbarid , mitem.itemid , mitem.extid 
                                      from mitem,extended 
                                      where mitem.mbarid = %s""" % mbar)
+    def getHndlr(self, prgnam = u''):
+        return sq.wxsqltxt(self.DBF, """ select handler.handlerid, handler.prgdir 
+                                    from handler     where handler.prgname = '%s'  """ %prgnam)
 
+    def gethddir(self, dirct= u''):
+        return sq.wxsqsnd(self.DBF,u'menubar',u'mbarid',u'mbardir',dirct)
 
 
 

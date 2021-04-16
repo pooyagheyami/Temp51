@@ -77,7 +77,7 @@ class MyPanel1 ( wx.Panel ):
 
 	# Virtual event handlers, overide them in your derived class
 	def Dombr( self, event ):
-		from GUI.API.MenuDev1 import MyPanel3
+		from Temps.MenuDev1 import MyPanel3
 		self.b = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
 		self.panel = MyPanel3(self.b)
 		self.b.SetSize((500, 180))
@@ -85,7 +85,7 @@ class MyPanel1 ( wx.Panel ):
 
 
 	def Doitm( self, event ):
-		from GUI.API.MenuDev1 import MyPanel1
+		from Temps.MenuDev1 import MyPanel1
 		self.b = wx.Frame(self, style=wx.CAPTION | wx.CLOSE_BOX | wx.FRAME_FLOAT_ON_PARENT | wx.TAB_TRAVERSAL)
 		self.panel = MyPanel1(self.b)
 		self.b.SetSize((650, 300))

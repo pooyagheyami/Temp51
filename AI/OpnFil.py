@@ -149,6 +149,10 @@ class PyPanel(wx.Panel):
         Vz2.Add(self.btn5, 0, wx.ALL, 5)
 
         Vz2.Add((0, 0), 1, wx.EXPAND, 5)
+        self.btn9 = wx.Button(self, wx.ID_ANY, u"Analyze", wx.DefaultPosition, wx.DefaultSize, 0)
+        Vz2.Add(self.btn9, 0, wx.ALL, 5)
+
+        Vz2.Add((0, 0), 1, wx.EXPAND, 5)
 
         self.btn6 = wx.Button(self, wx.ID_ANY, u"line-close", wx.DefaultPosition, wx.DefaultSize, 0)
         self.btn6.SetToolTip(u"add close code to button function")
@@ -187,6 +191,8 @@ class PyPanel(wx.Panel):
         self.btn6.Bind(wx.EVT_BUTTON, self.line_clos)
         self.btn7.Bind(wx.EVT_BUTTON, self.line_gets)
         self.btn8.Bind(wx.EVT_BUTTON, self.line_puts)
+
+        self.btn9.Bind(wx.EVT_BUTTON, self.analyzfil)
 
     def __del__(self):
         pass
@@ -227,15 +233,51 @@ class PyPanel(wx.Panel):
         q.Close()
 
     def line_clos(self, event):
-        print(self.getpos())
+        #print(self.getpos())
         self.py_view.AddText("\t\tq = self.GetParent()\n\t\tq.Close()\n")
 
 
     def line_gets(self, event):
-        pass
+
+        if self.ctltxt == [] and self.chosls == [] and self.chkbox == [] and self.rdobox == []:
+            wx.MessageBox(u'No any part of Panel for get data! Please use one of this object: \
+                          wx.TextCtrl wx.Choice wx.CheckBox wx.RadioBox')
+        else:
+            i = 1
+            for obj in self.ctltxt:
+                self.py_view.AddText("\t\tD%s = "%str(i)+obj+".GetValue()\n")
+                i += 1
+            for obj in self.chosls:
+                self.py_view.AddText("\t\tD%s = "%str(i)+obj+".GetSelection()\n")
+                i += 1
+            for obj in self.chkbox:
+                self.py_view.AddText("\t\tD%s = "%str(i)+obj+".GetValue()\n")
+                i += 1
+            for obj in self.rdobox:
+                self.py_view.AddText("\t\tD%s = "%str(i)+obj+".GetSelection()\n")
+                i += 1
+
+        self.py_view.AddText("\t\t#### you can return data in your own format here ###\n")
 
     def line_puts(self, event):
         pass
+
+    def analyzfil(self, event):
+        self.ctltxt = []
+        self.chkbox = []
+        self.rdobox = []
+        self.chosls = []
+        lins = self.py_view.GetLineCount()
+        for l in range(lins):
+            if u'wx.TextCtrl' in self.py_view.GetLine(l):
+                self.ctltxt.append(self.py_view.GetLineText(l).split('=')[0].lstrip('\t').rstrip(' '))
+            if u'wx.Choice' in self.py_view.GetLine(l):
+                self.chosls.append(self.py_view.GetLineText(l).split('=')[0].lstrip('\t').rstrip(' '))
+            if u'wx.CheckBox' in self.py_view.GetLine(l):
+                self.chkbox.append(self.py_view.GetLineText(l).split('=')[0].lstrip('\t').rstrip(' '))
+            if u'wx.RadioBox' in self.py_view.GetLine(l):
+                self.rdobox.append(self.py_view.GetLineText(l).split('=')[0].lstrip('\t').rstrip(' '))
+        wx.MessageBox(u"We Successful Analyzing file for field and data")
 
     def getpos(self):
         return self.py_view.GetPosition()

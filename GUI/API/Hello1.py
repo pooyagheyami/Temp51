@@ -66,12 +66,13 @@ class MyPanel1 ( wx.Panel ):
 	def __del__( self ):
 		pass
 
-
 	# Virtual event handlers, overide them in your derived class
+	def getData( self ):
+		pass
+
 	def Docancel( self, event ):
 		q = self.GetParent()
 		q.Close()
-
 
 	def Doapply( self, event ):
 		q = self.GetParent()

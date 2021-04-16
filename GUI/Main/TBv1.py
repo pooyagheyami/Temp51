@@ -3,7 +3,7 @@
 # !usr/bin/env python
 
 import wx
-import GUI.API.MenuDev1 as MDV
+import DCC.ToolBar1 as TBV
 from Config.Init import *
 
 
@@ -13,7 +13,7 @@ class telframe(wx.Frame):
         self.parent = parent
 
 
-        self.panel = MDV.MyPanel1(self)
+        self.panel = TBV.MyPanel1(self)
 
     def closeit(self):
         self.Close(True)
@@ -29,8 +29,8 @@ def main(panel=None):
     parent = panel.GetParent()
 
     frame = telframe(parent)
-    frame.SetTitle(u'Note')
-    frame.SetSize((650, 300))
+    frame.SetTitle(u'Tool Bar Develop')
+    frame.SetSize((500, 300))
     frame.Show()
 
 

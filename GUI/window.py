@@ -20,6 +20,7 @@ import GUI.BG2 as BG
 #import Config.basedata as bs
 #import Utility.massage as ms
 import Utility.eCalClak1 as C1
+import Utility.DigitClack as DgK
 #import Utility.user as user
 from Config.Init import * 
 import wx.dataview
@@ -42,12 +43,12 @@ class MainWin(wx.Frame):
         #Menu of Program============== 
         menu = MM.MainMenu()
         statusBar = self.CreateStatusBar()
-        imenu=menu.createMenuBar()
+        imenu = menu.createMenuBar()
 
         self.SetMenuBar(imenu)
-        h= menu.GetItemId()
+        h = menu.GetItemId()
         h1 = menu.mid
-        self.Bind(wx.EVT_MENU_RANGE,self.OnMenu,id =h1, id2=h.GetId())
+        self.Bind(wx.EVT_MENU_RANGE, self.OnMenu, id=h1, id2=h.GetId())
 
         #Enable or Disable Menu==========================
         #imenu.EnableTop(3, False)
@@ -81,6 +82,11 @@ class MainWin(wx.Frame):
         self.Centre( wx.BOTH )
 
         #Show other win in main windows==============
+
+        DigitK = DgK.MyFrame1(self)
+        DigitK.SetSize((270,95))
+        DigitK.SetPosition((970,100))
+        DigitK.Show()
         '''
         if C == 1:
             wino = wx.Frame(self,-1,style=wx.FRAME_FLOAT_ON_PARENT|wx.DEFAULT_FRAME_STYLE)

@@ -49,8 +49,8 @@ class BGPanel(wx.Panel):
 		#print self.itm3.IsChecked(),self.itm4.IsChecked()
 
 	def setmenu(self,event):
-		self.MnuDic = { 1: [u'Menu Change',9999] ,2:[u'Toolbar Change',1002],3:[u'Panes Change',1002],4:[u'',0],
-					5:[u'Databases...',1002],6:[u'',0],7:[u'Settings...',1002] }
+		self.MnuDic = { 1: [u'Menu Change',9999] ,2:[u'Toolbar Change',9998],3:[u'Panes Change',1002],4:[u'',0],
+					5:[u'Databases...',1002],6:[u'Programs...',9995],7:[u'ML Design...',1002],8:[u'',0],9:[u'Settings...',1002] }
 		self.m1 = wx.Menu()
 
 		self.itms = []

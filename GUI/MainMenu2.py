@@ -67,7 +67,6 @@ class MainMenu():
                     else:
                         self.menuItem =  iroot.Append(eachId,eachLabel,eachStatus)
 
-
         # print self.menu
         return self.menu
 
