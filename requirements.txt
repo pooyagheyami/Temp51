@@ -1,2 +1,2 @@
-convertdate=2.3.2
-wxPython=4.1.1
+convertdate == 2.3.2
+wxPython == 4.1.1
