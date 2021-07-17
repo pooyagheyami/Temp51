@@ -17,6 +17,7 @@ from AI.Generats import *
 from Config.Init import *
 
 import Database.MenuSet2 as MS
+import Database.PostGet as PG
 import GUI.proman as pro
 import importlib
 
@@ -45,9 +46,12 @@ class MyPanel1 ( wx.Panel ):
 
         Hzp1 = wx.WrapSizer( wx.HORIZONTAL, 0 )
 
-        if Data != []:
+        if Data != [] and Data[2] != 'S':
             self.barname = self.getMData.gBarN(Data[0])[0][0]
             self.C = self.barname[0]
+        elif Data[2] == 'S':
+            self.barname = self.getMData.gItem(Data[0], 'and mitem.itemid = %d'%Data[1])[0][0]
+            self.C = 'S'
         else:
             self.barname = u''
             self.C = 'P'
@@ -74,6 +78,7 @@ class MyPanel1 ( wx.Panel ):
         Hzp1.Add( self.fld1, 0, wx.ALL, 5 )
 
         self.btnsrc = wx.Button( self.P1, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
+        self.btnsrc.SetToolTip(u"Automatic code generate")
         Hzp1.Add( self.btnsrc, 0, wx.ALL, 5 )
 
 
@@ -231,6 +236,10 @@ class MyPanel1 ( wx.Panel ):
         self.btn3 = wx.Button( self.P2, wx.ID_ANY, u"New...", wx.DefaultPosition, wx.DefaultSize, 0 )
         Hzp10.Add( self.btn3, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
+        self.btn4 = wx.Button(self.P2, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT)
+        self.btn4.SetToolTip(u"Add program from List")
+        Hzp10.Add(self.btn4, 0, wx.ALL, 5)
+
 
         Vzp2.Add( Hzp10, 0, wx.EXPAND, 5 )
 
@@ -282,6 +291,9 @@ class MyPanel1 ( wx.Panel ):
         self.Lbox1 = wx.ListBox( self.P2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, Lbox1Choices, wx.LB_ALWAYS_SB )
         Hzp13.Add( self.Lbox1, 1, wx.ALL|wx.EXPAND, 5 )
 
+        self.Lfeld = wx.TextCtrl(self.P2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,  wx.TE_MULTILINE)
+        Hzp13.Add(self.Lfeld, 0, wx.ALL|wx.EXPAND, 5 )
+
 
         Vzp2.Add( Hzp13, 0, wx.EXPAND, 5 )
 
@@ -289,6 +301,16 @@ class MyPanel1 ( wx.Panel ):
 
         self.btn9 = wx.Button( self.P2, wx.ID_ANY, u"Generate2", wx.DefaultPosition, wx.DefaultSize, 0 )
         Hzp14.Add( self.btn9, 0, wx.ALL, 5 )
+
+        self.btn10 = wx.Button(self.P2, wx.ID_ANY, u"Set Data", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hzp14.Add(self.btn10, 0, wx.ALL, 5)
+
+        self.btn11 = wx.Button(self.P2, wx.ID_ANY, u"Get Data", wx.DefaultPosition, wx.DefaultSize, 0)
+        Hzp14.Add(self.btn11, 0, wx.TOP | wx.BOTTOM | wx.LEFT, 5)
+
+        self.btn12 = wx.Button(self.P2, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT)
+        self.btn12.SetToolTip(u"Add Data from Database")
+        Hzp14.Add(self.btn12, 0, wx.ALL, 5)
 
         #self.Fildlst = wx.ListCtrl( self.P2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_AUTOARRANGE|wx.LC_NO_HEADER )
         #Hzp14.Add( self.Fildlst, 1, wx.ALL, 5 )
@@ -337,11 +359,15 @@ class MyPanel1 ( wx.Panel ):
         self.btn1.Bind( wx.EVT_BUTTON, self.prvw )
         self.btn2.Bind( wx.EVT_BUTTON, self.opnfil )
         self.btn3.Bind( wx.EVT_BUTTON, self.newfil )
+        self.btn4.Bind(wx.EVT_BUTTON, self.Prolst)
         self.btn6.Bind( wx.EVT_BUTTON, self.gnrt1 )
         self.dbfile.Bind( wx.EVT_FILEPICKER_CHANGED, self.Dbfile )
         self.Lbox1.Bind( wx.EVT_LISTBOX, self.tblfld )
         self.Lbox1.Bind( wx.EVT_LISTBOX_DCLICK, self.dblclik )
         self.btn9.Bind( wx.EVT_BUTTON, self.gnrt2 )
+        self.btn10.Bind(wx.EVT_BUTTON, self.SetD)
+        self.btn11.Bind(wx.EVT_BUTTON, self.GetD)
+        self.btn12.Bind(wx.EVT_BUTTON, self.AtoD)
         self.btnA.Bind( wx.EVT_BUTTON, self.Aply )
         self.btnS.Bind( wx.EVT_BUTTON, self.Save )
         self.btnR.Bind( wx.EVT_BUTTON, self.Rprt )
@@ -407,6 +433,18 @@ class MyPanel1 ( wx.Panel ):
         self.Update()
 
     def lstid( self, event ):
+        if self.Button == 'AddNew':
+            britm = self.getMData.gBarItm(int(self.Data[0]))
+            if britm != []:
+                print(britm[-1][1]+1)
+                self.fld0.SetValue(str(britm[-1][1]+1))
+                self.fld1.SetValue(str(britm[-1][1]+1)[0]+str(britm[-1][1]+1)[-2:]+self.barname[0].lower()+self.C.lower())
+            else:
+                print(britm)
+                print(self.Data)
+                self.fld0.SetValue(self.Data[0]+'1')
+                self.fld1.SetValue(self.Data[0][0]+'1'+self.Data[0][-1]+self.barname[0].lower()+self.C.lower())
+
         event.Skip()
 
     def shwicn( self, event ):
@@ -415,8 +453,6 @@ class MyPanel1 ( wx.Panel ):
 
     def typitm( self, event ):
         event.Skip()
-
-
 
 
     def disitm( self, event ):
@@ -441,6 +477,7 @@ class MyPanel1 ( wx.Panel ):
             self.pnl = m.MyPanel1(self.Frm)
             self.Frm.Show()
         except ImportError as error:
+            wx.MessageBox(error)
             print(error)
         event.Skip()
 
@@ -456,6 +493,9 @@ class MyPanel1 ( wx.Panel ):
         self.Pnl = PyPanel(self.Frm, GUI_PATH+'Temp\\untitle.py' )
         self.Frm.SetSize((700, 560))
         self.Frm.Show()
+        event.Skip()
+
+    def Prolst(self, event):
         event.Skip()
 
     def gnrt1( self, event ):
@@ -482,9 +522,28 @@ class MyPanel1 ( wx.Panel ):
         event.Skip()
 
     def Dbfile( self, event ):
+        dbfil = self.dbfile.GetPath().split('\\')[-1]
+        #print(dbfil)
+        idbfl = PG.Get(dbfil,u'',u'DBFields')
+        #print(idbfl.GetFromDbf())
+        tablfld = idbfl.GetFromDbf()
+        tblst = []
+        self.fldlst = {}
+        for tbl in tablfld:
+            tblst.append(tbl[1])
+            self.fldlst[tbl[2]] = tbl[4].split('(')[-1].rstrip(')').replace('\t','').replace('\n','')
+        #print(tblst,self.fldlst)
+        self.Lbox1.SetItems(tblst)
+        #print(self.fldlst.values())
+
         event.Skip()
 
     def tblfld( self, event ):
+        tbl = self.Lbox1.GetStringSelection()
+        #print(self.fldlst)
+        flds = self.fldlst[tbl].replace(',', '\n')
+
+        self.Lfeld.SetValue(flds)
         event.Skip()
 
     def dblclik( self, event ):
@@ -493,17 +552,30 @@ class MyPanel1 ( wx.Panel ):
     def gnrt2( self, event ):
         event.Skip()
 
+    def SetD(self, event):
+        event.Skip()
+
+    def GetD(self, event):
+        event.Skip()
+
+    def AtoD(self, event):
+        event.Skip()
+
     def Aply( self, event ):
         D = self.getfild()
-        # print(D)
-        # print(self.Data)
+        #print(D)
+        #print(self.Data)
         extid = D[0][0] + D[0][-1] + D[7] + self.C + D[2][0] + D[0][1:]
         if self.Doprgitm.GetValue() == '':
             hndid = 10001
         else:
             hndid = self.getHandel(self.Doprgitm.GetValue(), self.file1.GetPath())
         #print(hndid)
-        Dsri1 = [self.Data[0], int(D[0]), D[2], D[7], extid, hndid]
+        if self.Data[2] == 'S':
+            BrM = self.Data[1]
+        else:
+            BrM = self.Data[0]
+        Dsri1 = [BrM, int(D[0]), D[2], D[7], extid, hndid]
         Dsri2 = [extid, D[6], D[3].replace(ICON16_PATH, ''), D[4], D[5], D[1], 1]
         if D[8]:
             dn = 0
@@ -619,7 +691,7 @@ class MyPanel1 ( wx.Panel ):
                 itms = l[0].GetMenuItems()
                 #print(dir(itms[-1]))
                 for i in itms:
-                    print(i.GetId())
+                    #print(i.GetId())
                     if i.IsSeparator() and self.Data[2] == u'Separator':
 
                         i.Destroy()
@@ -630,7 +702,7 @@ class MyPanel1 ( wx.Panel ):
                         print(i)
 
     def getHandel(self, imodel, pathfile):
-        print(imodel,pathfile)
+        #print(imodel,pathfile)
         pr = self.getMData.AllHndl()
         #m = imodel.split('.')[1]
         for p in pr:

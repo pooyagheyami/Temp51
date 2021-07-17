@@ -4,6 +4,7 @@ import sys
 import os
 import codecs
 
+
 MAP = os.getcwd()
 
 if MAP.find(u'\\') > 0:
@@ -22,7 +23,13 @@ def opj(path):
     #print st    
     return st
 
+def _displayHook(obj):
+    """
+    Custom display hook to prevent Python stealing '_'.
+    """
 
+    if obj is not None:
+        print(repr(obj))
 
 DATABASE_PATH = os.path.join(MAP,opj(u'Database')+SLASH)
 
@@ -45,6 +52,8 @@ UTILITY_PATH  = os.path.join(MAP,opj(u'Utility')+SLASH)
 CONFIG_PATH   = os.path.join(MAP,opj(u'Config')+SLASH)
 LOGS_PATH     = os.path.join(MAP,opj(u'Logs')+SLASH)
 
+LOCALE_PATH   = os.path.join(MAP,opj(u'Locale')+SLASH)
+
 TEMPS_PATH    = os.path.join(MAP,opj(u'Temps')+SLASH)
 
 
@@ -57,4 +66,3 @@ def thistxt(filename):
             txt = txt + '\n' + lines[t]
     #print txt
     return txt
-    

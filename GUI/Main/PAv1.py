@@ -3,7 +3,7 @@
 # !usr/bin/env python
 
 import wx
-import DCC1.ProgDev2 as PDV
+import DCC1.AuiPan2 as APV
 from Config.Init import *
 
 
@@ -13,7 +13,7 @@ class telframe(wx.Frame):
         self.parent = parent
 
 
-        self.panel = PDV.MyPanel1(self)
+        self.panel = APV.MyPanel1(self)
 
     def closeit(self):
         self.Close(True)
@@ -29,7 +29,7 @@ def main(panel=None):
     parent = panel.GetParent()
 
     frame = telframe(parent)
-    frame.SetTitle(u'List of Program')
+    frame.SetTitle(u'Pane Aui Develop')
     frame.SetSize((555, 450))
     frame.Show()
 

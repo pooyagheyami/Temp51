@@ -8,7 +8,6 @@
 ###########################################################################
 
 import wx
-import wx.xrc
 
 import importlib
 
@@ -16,6 +15,8 @@ import Database.MenuSet2 as MS
 import AI.Analiz as AZ
 
 from Config.Init import *
+
+_ = wx.GetTranslation
 
 ###########################################################################
 ## Class MyPanel1
@@ -30,13 +31,15 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz1 = wx.BoxSizer( wx.HORIZONTAL )
 
-        GetData = MS.GetData(u'Menu2.db',u'')
-        mjoin = """ left join mitem on handler.handlerid = mitem.handlerid \
-                    left join menubar on mitem.mbarid = menubar.mbarid """
-        self.mylist = GetData.AllHndl(ext= mjoin + " where handler.handlerid < 99000 ")
-        print(self.mylist)
+        self.GetData = MS.GetData(u'Menu2.db',u'')
 
-        self.Title = wx.StaticText( self, wx.ID_ANY, u"List of Program in Application ", wx.DefaultPosition, wx.DefaultSize, 0 )
+        #mjoin = """ left join mitem on handler.handlerid = mitem.handlerid \
+        #            left join menubar on mitem.mbarid = menubar.mbarid """
+        self.mylist = self._meklst()
+        #self.mylist = GetData.AllHndl(ext= mjoin + " where handler.handlerid < 99000 ")
+        #print(self.mylist)
+
+        self.Title = wx.StaticText( self, wx.ID_ANY, _(u"List of Program in Application "), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.Title.Wrap( -1 )
 
         Hsz1.Add( self.Title, 0, wx.ALL, 5 )
@@ -59,7 +62,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz10 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt1 = wx.StaticText( self, wx.ID_ANY, u"Id No.", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt1 = wx.StaticText( self, wx.ID_ANY, _(u"Id No."), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt1.Wrap( -1 )
 
         Hsz10.Add( self.txt1, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -67,7 +70,7 @@ class MyPanel1 ( wx.Panel ):
         self.fld1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz10.Add( self.fld1, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-        self.txt2 = wx.StaticText( self, wx.ID_ANY, u"Prog. No.", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt2 = wx.StaticText( self, wx.ID_ANY, _(u"Prog. No."), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt2.Wrap( -1 )
 
         Hsz10.Add( self.txt2, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -80,7 +83,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz11 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt3 = wx.StaticText( self, wx.ID_ANY, u"Do name", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt3 = wx.StaticText( self, wx.ID_ANY, _(u"Do name"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt3.Wrap( -1 )
 
         Hsz11.Add( self.txt3, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -89,7 +92,7 @@ class MyPanel1 ( wx.Panel ):
         Hsz11.Add( self.fld3, 1, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 
         self.prw = wx.Button( self, wx.ID_ANY, u"...", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-        self.prw.SetToolTip( u"Preview" )
+        self.prw.SetToolTip( _(u"Preview" ))
 
         Hsz11.Add( self.prw, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
@@ -98,13 +101,13 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz12 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt4 = wx.StaticText( self, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt4 = wx.StaticText( self, wx.ID_ANY, _(u"Directory"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt4.Wrap( -1 )
 
         Hsz12.Add( self.txt4, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-        self.fdir = wx.DirPickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE|wx.DIRP_SMALL )
-        self.fdir.SetToolTip( u"Browse" )
+        self.fdir = wx.DirPickerCtrl( self, wx.ID_ANY, wx.EmptyString, _(u"Select a folder"), wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE|wx.DIRP_SMALL )
+        self.fdir.SetToolTip( _(u"Browse" ))
 
         Hsz12.Add( self.fdir, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
@@ -113,7 +116,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz13 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt5 = wx.StaticText( self, wx.ID_ANY, u"Parameters", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt5 = wx.StaticText( self, wx.ID_ANY, _(u"Parameters"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt5.Wrap( -1 )
 
         Hsz13.Add( self.txt5, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -126,10 +129,10 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz14 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.box1 = wx.CheckBox( self, wx.ID_ANY, u"Public it", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.box1 = wx.CheckBox( self, wx.ID_ANY, _(u"Public it"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz14.Add( self.box1, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-        self.txt6 = wx.StaticText( self, wx.ID_ANY, u"Link:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt6 = wx.StaticText( self, wx.ID_ANY, _(u"Link:"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt6.Wrap( -1 )
 
         Hsz14.Add( self.txt6, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -142,13 +145,13 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz15 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.btn1 = wx.Button( self, wx.ID_ANY, u"Open Edit", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn1 = wx.Button( self, wx.ID_ANY, _(u"Open Edit"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz15.Add( self.btn1, 0, wx.ALL, 5 )
 
-        self.btn2 = wx.Button( self, wx.ID_ANY, u"Add New", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn2 = wx.Button( self, wx.ID_ANY, _(u"Add New"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz15.Add( self.btn2, 0, wx.ALL, 5 )
 
-        self.btn3 = wx.Button( self, wx.ID_ANY, u"Delete", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn3 = wx.Button( self, wx.ID_ANY, _(u"Delete"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz15.Add( self.btn3, 0, wx.ALL, 5 )
 
 
@@ -170,17 +173,17 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz3 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.btn4 = wx.Button( self, wx.ID_ANY, u"Open", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.btn4.SetToolTip( u"Open Database" )
+        self.btn4 = wx.Button( self, wx.ID_ANY, _(u"Open"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn4.SetToolTip( _(u"Open Database" ))
 
         Hsz3.Add( self.btn4, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-        self.btn5 = wx.Button( self, wx.ID_ANY, u"New", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.btn5.SetToolTip( u"New Database" )
+        self.btn5 = wx.Button( self, wx.ID_ANY, _(u"New"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn5.SetToolTip( _(u"New Database" ))
 
         Hsz3.Add( self.btn5, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-        self.txt7 = wx.StaticText( self, wx.ID_ANY, u"Tabels Used", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt7 = wx.StaticText( self, wx.ID_ANY, _(u"Tabels Used"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt7.Wrap( -1 )
 
         Hsz3.Add( self.txt7, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -193,7 +196,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz4 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt8 = wx.StaticText( self, wx.ID_ANY, u"List Fields use", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt8 = wx.StaticText( self, wx.ID_ANY, _(u"List Fields use"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt8.Wrap( -1 )
 
         Hsz4.Add( self.txt8, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -206,7 +209,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz5 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.txt9 = wx.StaticText( self, wx.ID_ANY, u"action type", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.txt9 = wx.StaticText( self, wx.ID_ANY, _(u"action type"), wx.DefaultPosition, wx.DefaultSize, 0 )
         self.txt9.Wrap( -1 )
 
         Hsz5.Add( self.txt9, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -219,7 +222,7 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz5.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-        self.btn6 = wx.Button( self, wx.ID_ANY, u"Setting...", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn6 = wx.Button( self, wx.ID_ANY, _(u"Setting..."), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz5.Add( self.btn6, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
@@ -230,10 +233,10 @@ class MyPanel1 ( wx.Panel ):
 
         Hsz6.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-        self.btn7 = wx.Button( self, wx.ID_ANY, u"Cancel", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn7 = wx.Button( self, wx.ID_ANY, _(u"Cancel"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz6.Add( self.btn7, 0, wx.ALL, 5 )
 
-        self.btn8 = wx.Button( self, wx.ID_ANY, u"Apply", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.btn8 = wx.Button( self, wx.ID_ANY, _(u"Apply"), wx.DefaultPosition, wx.DefaultSize, 0 )
         Hsz6.Add( self.btn8, 0, wx.ALL, 5 )
 
 
@@ -262,21 +265,35 @@ class MyPanel1 ( wx.Panel ):
     def __del__( self ):
         pass
 
+    def _meklst(self):
+        mylist = []
+        tst1 = []
+        tst2 = []
+        mjoin = """ left join mitem on handler.handlerid = mitem.handlerid \
+                    left join menubar on mitem.mbarid = menubar.mbarid """
 
+        mlist = self.GetData.AllHndl(ext=mjoin + " where handler.handlerid < 99000  and handler.prgdir = menubar.mbarid")
+        for itm in mlist:
+            #print(itm[1],itm[14])
+            if itm[1] not in tst1 :
+                mylist.append(itm)
+                tst1.append(itm[1])
+                tst2.append(itm[14])
+            if itm[14] not in tst2:
+                mylist.append(itm)
+                tst1.append(itm[1])
+                tst2.append(itm[14])
+        #print(mylist)
+        return mylist
     # Virtual event handlers, overide them in your derived class
     def lstkt( self, event ):
         iprog = event.GetEventObject().GetStringSelection()
-        for lpro in self.mylist:
-            if lpro[1] == self.LPro1.GetStringSelection():
-                #print(lpro)
-                fl = self.analiz(iprog,lpro[13])
-                #print(fl)
-                if lpro[12] != None:
-                    pth = GUI_PATH+lpro[13]
-                else:
-                    pth = ''
-                Data = [str(lpro[0]),lpro[2],fl,pth,lpro[3],'']
-                self.fillfld(Data)
+        nlst = event.GetEventObject().GetSelection()
+        #print(iprog,nlst,self.mylist[nlst])
+        fl, pth = self.analiz(iprog,self.mylist[nlst][14])
+        Data = [str(self.mylist[nlst][0]), self.mylist[nlst][2], fl, pth, self.mylist[nlst][3], '']
+        self.fillfld(Data)
+
         event.Skip()
 
     def chkit( self, event ):
@@ -301,6 +318,7 @@ class MyPanel1 ( wx.Panel ):
                 self.pnl = m.MyPanel1(self.Frm)
                 self.Frm.Show()
             except ImportError as error:
+                wx.MessageBox(error)
                 print(error)
         event.Skip()
 
@@ -317,6 +335,18 @@ class MyPanel1 ( wx.Panel ):
         event.Skip()
 
     def delpro( self, event ):
+        pronam = self.LPro1.GetStringSelection()
+        pronum = self.LPro1.GetSelection()
+
+        for pro in self.mylist:
+            if pro[1] == pronam:
+                #print(pro)
+                SetData = MS.SetData(u'', u'', u'')
+                SetData.Table = u'handler'
+                SetData.Delitem('handlerid = %d ' % pro[0])
+                wx.MessageBox(_("program delete from list"))
+                self.LPro1.Delete(pronum)
+
         event.Skip()
 
     def opndata( self, event ):
@@ -343,11 +373,22 @@ class MyPanel1 ( wx.Panel ):
     def analiz(self, file, path):
         if path == None:
             return ''
+        for root, dirs, files in os.walk(GUI_PATH):
+
+            if file+'.py' in files:
+                #print(root,dirs,files)
+                #print(os.path.exists(root+"\\"+file+'.py'))
+                if path.split('.')[-1] == root.split('\\')[-1]:
+                    mpath = root
+        if mpath == None:
+            return ''
         else:
-            impfil = AZ.Anlzfil(GUI_PATH+path+'\\'+file+'.py')
+            #print(mpath)
+            impfil = AZ.Anlzfil(mpath + '\\' + file + '.py')
+            #impfil = AZ.Anlzfil(GUI_PATH+path+'\\'+file+'.py')
             impfil.parsefil()
             for imp in impfil.imprts:
                 if 'GUI' in imp:
-                    return imp.split(' ')[1]
+                    return imp.split(' ')[1],mpath
             else:
                 return ''

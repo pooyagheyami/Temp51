@@ -64,6 +64,9 @@ def DoProgram(item,MT):
     elif MT == 'A':
         p = M.program(item)
         d = 'GUI.Main'
+    else:
+        d = ''
+        p = ''
 
     I = M.Dohndlr()
     #print I
@@ -73,8 +76,11 @@ def DoProgram(item,MT):
     #print(Ii)
     a = d+'.'+p
     #i = __import__(a,globals(),locals(),Ii,0)
-
-    i = importlib.import_module(a)
+    try:
+        i = importlib.import_module(a)
+    except ImportError as error:
+        print(error)
+        i = -1
     #print dir(i)
     #i.main()
 

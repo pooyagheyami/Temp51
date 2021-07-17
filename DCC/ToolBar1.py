@@ -187,7 +187,7 @@ class MyPanel2 ( wx.Panel ):
 
         self.Button = Button
         self.Data = Data
-        print(self.Data)
+        #print(self.Data)
         if self.Data != []:
             grp = self.Data[0]//100
         else:
@@ -400,7 +400,7 @@ class MyPanel2 ( wx.Panel ):
         setdata = MS.SetData(u'toolbar',u'',u'')
         chkdata = getdata.GetAllTB()
         thsdata = self.getData()
-        print(thsdata)
+        #print(thsdata)
         if self.Button == "Add":
             if getdata.GetAllTB(u"where toolid = %s "% int(thsdata[0])) != []:
                 wx.MessageBox(u"you must use a new code please change id")
@@ -473,6 +473,7 @@ class MyPanel2 ( wx.Panel ):
 
 
         else:
+            wx.MessageBox(u'some error here')
             print(u'some error here')
         event.Skip()
 
@@ -490,15 +491,15 @@ class MyPanel2 ( wx.Panel ):
         return [D0,D1,D2,D3,D4,D5,D6,D7,D8,D9]
 
     def gethandler(self, prg):
-        print(prg)
+        #print(prg)
         getdata = MS.GetData(u'Menu2.db', u'')
         if prg == '':
             return 10001
         hdrid,mbrid = getdata.getHndlr(prg)[0]
 
-        print(hdrid,mbrid)
+        #print(hdrid,mbrid)
         mdir = getdata.gethddir(mbrid)
-        print(mdir)
+        #print(mdir)
         return int(hdrid)
 
     def AddTool(self, D):
@@ -506,7 +507,7 @@ class MyPanel2 ( wx.Panel ):
         tb = mw.GetToolBar()
 
         ppos = tb.GetToolPos(int(D[0])-1)
-        print(ppos)
+        #print(ppos)
         if ppos != -1:
             tb.InsertTool(ppos+1, int(D[0]), str(D[2]), wx.Bitmap(D[6]), wx.NullBitmap, wx.ITEM_NORMAL, str(D[3]), str(D[4]) )
             #tb.InsertTool(ppos, int(D[0]), str(D[2]), wx.Bitmap(D[6]), wx.NullBitmap, wx.ITEM_NORMAL)

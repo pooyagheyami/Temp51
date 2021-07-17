@@ -3,7 +3,7 @@
 # !usr/bin/env python
 
 import wx
-import DCC.MenuDev1 as MDV
+import DCC1.MenuDev2 as MDV
 from Config.Init import *
 
 
@@ -30,7 +30,7 @@ def main(panel=None):
 
     frame = telframe(parent)
     frame.SetTitle(u'Menu Bar Develop')
-    frame.SetSize((650, 300))
+    frame.SetSize((555, 450))
     frame.Show()
 
 

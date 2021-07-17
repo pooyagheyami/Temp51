@@ -3,7 +3,7 @@
 # !usr/bin/env python
 
 import wx
-import DCC.ToolBar1 as TBV
+import DCC1.ToolBar2 as TBV
 from Config.Init import *
 
 
@@ -30,7 +30,7 @@ def main(panel=None):
 
     frame = telframe(parent)
     frame.SetTitle(u'Tool Bar Develop')
-    frame.SetSize((500, 300))
+    frame.SetSize((555, 450))
     frame.Show()
 
 

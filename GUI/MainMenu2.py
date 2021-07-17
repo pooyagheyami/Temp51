@@ -12,6 +12,7 @@ from Config.Init import *
 class MainMenu():
     def __init__(self):
         self.createMenuBar()
+        #self.menuItem = self.menu.Append(0,'','')
         #M = MenuData()
         #self.m = M.menuBar()
         self.mid = 1001
@@ -28,7 +29,7 @@ class MainMenu():
             #if eachMenuData[3] == '31cd':
             #    print(self.menuBar)
 
-        # print self.menuBar
+        #print( self.menuBar )
         return self.menuBar
 
     def createMenu(self, menuData):
@@ -67,7 +68,7 @@ class MainMenu():
                     else:
                         self.menuItem =  iroot.Append(eachId,eachLabel,eachStatus)
 
-        # print self.menu
+        #print(self.menu)
         return self.menu
 
     def createSubmenu(self, mroot ):
@@ -94,7 +95,7 @@ class MenuData(object):
 
     def menuBar(self):
         self.mbar = []
-        for row in self.MySql.AmenuBar():
+        for row in self.MySql.AmenuBar(ext=' and menubar.mbarid < 9999  '):
             self.mbar.append(row)
         return self.mbar
 
@@ -123,3 +124,38 @@ class MenuData(object):
             self.mdir.append(row)
         # print self.mdir
         return self.mdir
+
+
+class AuiMenu(wx.MenuBar):
+    def __init__(self):
+        wx.MenuBar.__init__(self, style=0)
+        self.m = MenuData()
+        print(self.m.menuBar())
+        self.createMenuBar()
+
+
+    def createMenuBar(self):
+        for eachmenu in self.m.menuBar():
+            menutitle = eachmenu[1]
+            print(self.m.menuItem(eachmenu[0]))
+            self.Append(self.createMenuItem(self.m.menuItem(eachmenu[0])),menutitle)
+
+    def createMenuItem(self, menudata):
+        self.menu = wx.Menu()
+
+        return self.menu
+
+    def AddItem(self):
+        pass
+
+    def AddSubMenu(self):
+        pass
+
+    def AddSepar(self):
+        pass
+
+    def AddCheck(self):
+        pass
+
+    def AddRadio(self):
+        pass

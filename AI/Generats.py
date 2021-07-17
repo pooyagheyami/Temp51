@@ -13,7 +13,7 @@ class Genrate(object):
     def createFrm(self, filnam):
         self.filnam = filnam
         self.impfil = self.filnam.split('\\')[-1].replace('.py', '')
-        print(self.impfil)
+        #print(self.impfil)
         #pnlfil = Anlzfil(filnam)
         #self.imp_pnl = pnlfil.parsefil()
         #self.GUIpars = pnlfil.getGUIfil()

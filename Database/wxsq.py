@@ -227,6 +227,3 @@ def wxsqsnd(database,tabel,field1,field2,data):
     mylist = Mydb.execute('select '+tabel+'.'+field1+' from '+tabel+' where '+tabel+'.'+field2+" = '%s' "%data)
     #print mylist
     return mylist
-
-
-    

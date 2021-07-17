@@ -9,7 +9,7 @@ from Config.Init import *
 
 import GUI.proman as pro
 
-
+_ = wx.GetTranslation
 
 class BGPanel(wx.Panel):
 	def __init__( self,parent,BGfile ):
@@ -49,8 +49,9 @@ class BGPanel(wx.Panel):
 		#print self.itm3.IsChecked(),self.itm4.IsChecked()
 
 	def setmenu(self,event):
-		self.MnuDic = { 1: [u'Menu Change',9999] ,2:[u'Toolbar Change',9998],3:[u'Panes Change',1002],4:[u'',0],
-					5:[u'Databases...',1002],6:[u'Programs...',9995],7:[u'ML Design...',1002],8:[u'',0],9:[u'Settings...',1002] }
+		self.MnuDic = { 1: [_(u'Menu Change'),9999] ,2:[_(u'Toolbar Change'),9998],3:[_(u'Panes Change'),9997],4:[u'',0],
+					    5:[_(u'Databases...'),9996],6:[_(u'Programs...'),9995],7:[_(u'Add Tools...'),9994],8:[u'',0],
+						9:[_(u'ML Design...'),9990],10:[u'',0],11:[_(u'Settings...'),9992] }
 		self.m1 = wx.Menu()
 
 		self.itms = []
@@ -88,5 +89,24 @@ class BGPanel(wx.Panel):
 			#dc.SetClippingRect(rect)
 			dc.SetClippingRegion(rect)
 		dc.Clear()
-		bmp = wx.Bitmap(PICS_PATH+self.BGfile)
-		dc.DrawBitmap(bmp, 0, 0)
+		#bmp = wx.Bitmap(PICS_PATH+self.BGfile)
+		bmp = wx.Bitmap(self.BGfile)
+		img = bmp.ConvertToImage()
+		img2 = img.Scale(wx.GetDisplaySize()[0],wx.GetDisplaySize()[1])
+		bmp2 = img2.ConvertToBitmap()
+		#print(dir(img2))
+		#print(bmp2.GetWidth(),bmp2.GetHeight())
+		#print(wx.GetDisplaySize())
+		dc.DrawBitmap(bmp2, 0, 0)
+
+	def ChangeBackGround(self):
+		dc = wx.ClientDC(self)
+		rect = self.GetUpdateRegion().GetBox()
+		dc.SetClippingRegion(rect)
+		dc.Clear()
+		bmp = wx.Bitmap(self.BGfile)
+		img = bmp.ConvertToImage()
+		img2 = img.Scale(wx.GetDisplaySize()[0], wx.GetDisplaySize()[1])
+		bmp2 = img2.ConvertToBitmap()
+		dc.DrawBitmap(bmp2, 0, 0)
+		self.Refresh()

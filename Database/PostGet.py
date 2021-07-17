@@ -9,15 +9,14 @@ class Get:
     def __init__(self, DBF, Data, file):
         self.DBF = DBF
         self.Data = Data
-        sqlfile = DATABASE_PATH + '/sqls/' + file
+        sqlfile = DATABASE_PATH + 'sqls' + SLASH + file
         self.SQLtxt = self.openSql(sqlfile)
-
 
     def openSql(self, sqlfile):
         with open(sqlfile) as f:
             alltxt = f.readlines()
-        print(alltxt)
-        return alltxt
+        #print(alltxt)
+        return alltxt[0]
 
     def GetFromDbf(self):
         return sq.wxsqltxt(self.DBF, self.SQLtxt)

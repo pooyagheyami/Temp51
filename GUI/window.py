@@ -42,13 +42,15 @@ class MainWin(wx.Frame):
 
         #Menu of Program============== 
         menu = MM.MainMenu()
+
         statusBar = self.CreateStatusBar()
         imenu = menu.createMenuBar()
 
-        self.SetMenuBar(imenu)
-        h = menu.GetItemId()
-        h1 = menu.mid
-        self.Bind(wx.EVT_MENU_RANGE, self.OnMenu, id=h1, id2=h.GetId())
+        if len(imenu.GetMenus()) > 1:
+            self.SetMenuBar(imenu)
+            h = menu.GetItemId()
+            h1 = menu.mid
+            self.Bind(wx.EVT_MENU_RANGE, self.OnMenu, id=h1, id2=h.GetId())
 
         #Enable or Disable Menu==========================
         #imenu.EnableTop(3, False)

@@ -11,28 +11,28 @@ class GetData:
         self.sends = sends
 
     def ShowItem(self, ibar=1):
-        return sq.wxsqltxt(self.DBF, """select mitem.extid, mitem.itemid,mitem.mbarid,mitem.itemname,handler.prgname,extended.acclvlid
+        return sq.wxsqltxt(self.DBF, """select distinct mitem.extid, mitem.itemid,mitem.mbarid,mitem.itemname,handler.prgname,extended.acclvlid, mitem.itemtyp
                                         from mitem
                                         left join handler on handler.handlerid = mitem.handlerid
                                         left join extended on extended.extid = mitem.extid
                                         where mitem.mbarid = %d
                                         """ % ibar)
 
-    def gItem(self, mbar=1):
+    def gItem(self, mbar=1, ext=''):
         return sq.wxsqltxt(self.DBF, """select mitem.itemname,mitem.itemid
                                         from mitem
                                         where mitem.mbarid = %d
-                                        """ % mbar)
+                                         %s """ % (mbar, ext) )
     def gBarN(self, mbar=1):
         return sq.wxsqsnd(self.DBF,u'menubar',u'mbarname',u'mbarid',mbar)
 
-    def AmenuBar(self, Access=u'FFFF'):
-        return sq.wxsqltxt(self.DBF, """ SELECT *
+    def AmenuBar(self, Access=u'FFFF',ext=''):
+        return sq.wxsqltxt(self.DBF, """ SELECT distinct *
                                          FROM menubar,access
                                          where menubar.acclvlid = access.acclvlid
                                          and access.acclvl = '%s'
-                                         """ % Access)
-
+                                         %s order by menubar.mbarid""" % (Access,ext)
+                           )
     def AmenuItm(self, barid=101):
         return sq.wxsqltxt(self.DBF, """SELECT DISTINCT mitem.itemid,mitem.itemname,extended.status,extended.shortcut,extended.icon,mitem.itemtyp
                      FROM mitem
@@ -52,8 +52,8 @@ class GetData:
         return sq.wxsqltxt(self.DBF, """SELECT menubar.mbardir
                                         FROM menubar
                                         """)
-    def AllBar(self):
-        return sq.wxsqltxt(self.DBF,"""SELECT * FROM menubar""")
+    def AllBar(self,ext=''):
+        return sq.wxsqltxt(self.DBF,"""SELECT * FROM menubar %s"""%ext)
 
     def RevItem(self):
         return sq.wxsqltxt(self.DBF,"""select mitem.itemname,mitem.itemid 
@@ -86,7 +86,7 @@ class GetData:
           WHERE  mitem.handlerid  notnull """)
 
     def AllHndl(self, ext=''):
-        return sq.wxsqltxt(self.DBF,""" select * from handler %s """ % ext)
+        return sq.wxsqltxt(self.DBF,""" select distinct * from handler %s """ % ext)
 
     def GetTB(self):
         return sq.wxsqltxt(self.DBF,"""select toolbar.toolid,toolbar.toolname,toolbar.toolicon,toolbar.shrttxt,handler.prgname 
